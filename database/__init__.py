@@ -1,12 +1,11 @@
-#from database.database_config import Config
-
+from database.database_config import Config
+from flask_sqlalchemy import SQLAlchemy
 from domain.user import User
 
 
 def run():
-    from main import db
+    from controller import db
     db.create_all()
-    print("database created!")
 
 
 run()
