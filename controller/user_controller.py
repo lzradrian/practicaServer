@@ -5,7 +5,6 @@ auth = Blueprint('auth', __name__)
 
 from repository.user_repository import UserRepository
 from service.user_service import UserService
-from domain.user import User
 
 userRepo = UserRepository()
 userService = UserService(userRepo)
