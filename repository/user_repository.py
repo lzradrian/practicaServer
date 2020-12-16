@@ -21,18 +21,18 @@ class UserRepository:
 
 
     def add(self,user):
-        from main import db
+        from controller import db
         db.session.add(user)
         db.session.commit()
         return user
 
     def remove(self,user):
-        from main import db
+        from controller import db
         db.session.delete(user)
         db.session.commit()
 
     def update(self,user):
-        from main import db
+        from controller import db
         from domain.user import User
 
         userfound = User.query.get(user.get_id())
