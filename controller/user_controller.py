@@ -23,17 +23,17 @@ def login():
         password = request.form["password"]
         session["user"]=username
 
+        try:
+            found_user = userService.getOneByUsername(username)
+        except ValueError as err:
+            flash("Incorect credentials!")
+            return render_template("login.html")
 
-        #found_user = userService.getOneByUsername(username)
-        #if found_user:
-        #    session["email"] = found_user.email
-        #else:
-        #    usr= User(username,password)
-        #    userService.add(usr)
+        if found_user and found_user.get_password() == password:
+            flash("Login succesful!")
+            return redirect(url_for("users.user"))
 
 
-        flash("Login succesful!")
-        return redirect(url_for("users.user"))
     else:
         if "user" in session:
             flash("Already logged in!")

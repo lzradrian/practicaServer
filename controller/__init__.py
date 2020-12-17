@@ -13,5 +13,14 @@ app.config.from_object('database.database_config.Config')
 db = SQLAlchemy(app)
 
 if __name__ == '__main__':
+
+    #from repository.user_repository import UserRepository
+    #from service.user_service import UserService
+    #userRepo = UserRepository()
+    #userService = UserService(userRepo)
+    #from domain.user import User
+    #user1 = User(1,"admin","admin","email","role")
+    #userService.add(user1)
+
     app.run()
 
