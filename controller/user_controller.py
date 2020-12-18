@@ -15,11 +15,13 @@ def index():
     #return "hello"
     return render_template("home.html")
 
+
+
 @auth.route('/login',methods=["POST","GET"])
 def login():
     if request.method=="POST":
         session.permanent = True
-        username=request.form["username"]
+        username= request.form["username"]
         password = request.form["password"]
         session["user"]=username
 
@@ -45,6 +47,10 @@ def login():
 def user():
     email=None
 
+    if request.method == "POST":
+         email=request.form["email"]
+
+    email=None
     if "user" in session:
         user=session["user"]
         if request.method=="POST":
@@ -58,6 +64,19 @@ def user():
     else:
         flash("You are not logged in!")
         return redirect(url_for("auth.login"))
+
+#din AcordPractica.html (ce contine un form) obtinem datele: nume firma, adresa etc
+#cazuri posibile: cu aceste date sa generam un nou acord.html completat (si apoi transformat in pdf)
+#libraria: Dominate
+@users.route("/user/acordPractica", methods=["POST", "GET"])
+def userAcordPractica():
+    if request.method == "POST":
+        numeFirma = request.form["numeFirma"]
+        print("numeFirma obtinut din form: ",numeFirma)
+
+        return render_template("home.html")
+    else:
+        return render_template("AcordPractica.html")
 
 @users.route("/logout")
 def logout():

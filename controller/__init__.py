@@ -12,6 +12,8 @@ app.config['SECRET_KEY'] = '123abc7891337'
 app.config.from_object('database.database_config.Config')
 db = SQLAlchemy(app)
 
+
+
 if __name__ == '__main__':
 
     #from repository.user_repository import UserRepository
