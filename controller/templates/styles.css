@@ -1,3 +1,24 @@
-divProtectie {
-	
+.documentDiv {
+	width: 30%;
+	height: 60%;
+	background-color: #888888;
+	position: absolute;
+}
+
+.documentButtonForm {
+	height: 15%;
+	top: 5%;
+	margin-top: 5%;
+	position: relative;
+}
+
+.documentButton {
+	width: 60%;
+	height: 100%;
+	left: 20%;
+	position: relative;
+}
+
+h2 {
+	text-align: center;
 }
