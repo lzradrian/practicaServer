@@ -1,6 +1,6 @@
 class Role:
     student = 0
-    fimaResponsabil = 1
+    firmaResponsabil = 1
     firmaTutori = 2
     secretara = 3
     persProtectiaMuncii = 4
