@@ -1,0 +1,9 @@
+StudentName StudentName sdfsdf sdfsdfsdfsdf
+StudentGroup StudentGroup
+StudentSpecialization StudentSpecialization
+DeclartionInternshipPeriod 2020-2021
+StudentYear 3
+DeclarationSignDate 2020.10.10
+HomeAddress Address
+CompanyName Company
+CoordonatorName CoordonatorName
