@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="loginStyles.css">
+</head>
+<body>
+	<div class="headerStyle">
+		<h1>Register</h1>
+	</div>
+	<div class="formStyle">
+		<form>
+			<label for="username">Username:</label>
+			<input type="text" id="username" name="username"><br><br>
+			<label for="pwd">Password:</label>
+			<input type="password" id="pwd" name="pwd"><br><br>
+			<label for="pwd">E-mail address:</label>
+			<input type="text" id="email" name="email"><br><br>
+			<p>rol/tip:</p>
+			<input type="radio" id="student" name="regType" value="student">
+			<label for="student">student</label>
+			<input type="radio" id="respFirma" name="regType" value="respFirma">
+			<label for="respFirma">responsabil firma</label><br>
+			<input type="radio" id="tutor" name="regType" value="tutor">
+			<label for="other">tutor</label>
+			<input type="radio" id="secrFacult" name="regType" value="secrFacult">
+			<label for="secrFacult">secretara facultate</label><br>
+			<input type="radio" id="persProtMunc" name="regType" value="persProtMunc">
+			<label for="persProtMunc">persoana protectia muncii</label>
+			<input type="radio" id="cadrDidSuper" name="regType" value="cadrDidSuper">
+			<label for="secrFacult">cadru didactic supervizor</label><br>
+			<input type="radio" id="respFacult" name="regType" value="respFacult">
+			<label for="respFacult">responsabil facultate</label>
+			<input type="radio" id="decan" name="regType" value="decan">
+			<label for="decan">decan</label><br>
+			<br>
+			<form>
+    				<button formaction="./login.htm">Register</button><br><br>
+				<button formaction="./login.htm">Go back</button>
+			</form>
+		</form>
+	</div>
+</body>
+</html>
