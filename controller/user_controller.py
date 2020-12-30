@@ -1,4 +1,5 @@
-from flask import Blueprint , redirect,flash,render_template,session,request,url_for
+from flask import Blueprint, redirect, flash, render_template, session, request, url_for, current_app
+from flask_principal import identity_changed, Identity, AnonymousIdentity
 
 from repository.user_repository import UserRepository
 from service.user_service import UserService
@@ -9,14 +10,19 @@ userRepo = UserRepository()
 userService = UserService(userRepo)
 
 
-@auth.route('/login',methods=["POST","GET"])
+@auth.route("/")
+def home():
+    return render_template("home.html")
+
+
+@auth.route('/login', methods=["POST", "GET"])
 def login():
-    if request.method=="POST":
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
 
         session.permanent = True
-        username= request.form["username"]
-        password = request.form["password"]
-        session["user"]=username
+        session["username"] = username
 
         try:
             found_user = userService.getOneByUsername(username)
@@ -25,41 +31,47 @@ def login():
             return render_template("login.html")
 
         if found_user and found_user.get_password() == password:
-            if (found_user.get_role()==0):
+            if (found_user.get_role() == 0):
+                session["role"] = 0
                 return redirect(url_for("student.home"))
-            if (found_user.get_role()==1):
-                pass
-            if (found_user.get_role()==2):
+            if (found_user.get_role() == 1):
+                session["role"] = 1
+                return redirect(url_for("responsabil_firma.home"))
+            if (found_user.get_role() == 2):
+                session["role"] = 2
                 return redirect(url_for("tutore_firma.home"))
-            if (found_user.get_role()==3):
+            if (found_user.get_role() == 3):
+                session["role"] = 3
                 return redirect(url_for("secretara.home"))
-            if (found_user.get_role()==4):
+            if (found_user.get_role() == 4):
                 pass
-            if (found_user.get_role()==5):
-                pass
-            if (found_user.get_role()==6):
+            if (found_user.get_role() == 5):
+                session["role"] = 5
+                return redirect(url_for("cadru_didactic_supervizor.home"))
+            if (found_user.get_role() == 6):
+                session["role"] = 6
                 return redirect(url_for("responsabil_facultate.home"))
-            if (found_user.get_role()==7):
-                pass
+            if (found_user.get_role() == 7):
+                session["role"] = 7
+                return redirect(url_for("decan.home"))
             else:
                 return render_template("login.html")
         else:
-            #print("wrong pass")
-            flash("Incorect credentials!")
+            flash("Incorect password!")
             return render_template("login.html")
-    else: #GET
+    else:  # GET
         if "user" in session:
             flash("Already logged in!")
-            return redirect(url_for("users.user"))
+            return render_template("login.html")
         return render_template("login.html")
 
 
 @auth.route("/logout")
 def logout():
-    if "user" in session:
-        user=session["user"]
+    if "username" in session:
         flash("You have been logged out!", "info")
-    session.pop("user",None)
-    session.pop("email", None)
+
+    session.pop("username", None)
+    session.pop("role",None)
 
     return redirect(url_for("auth.login"))

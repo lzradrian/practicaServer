@@ -1,5 +1,6 @@
 from controller import db
 
+
 class User(db.Model):
     __tablename__ = 'Users'
     _id = db.Column("id",db.Integer,primary_key=True,autoincrement=True)
@@ -14,8 +15,6 @@ class User(db.Model):
         self.password=password
         self.email=email
         self.role=role
-
-
 
     def set_id(self,value):
         self.id=value

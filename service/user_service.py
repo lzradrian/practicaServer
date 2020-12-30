@@ -1,9 +1,6 @@
-
-
 class UserService:
     def __init__(self,__repo):
         self.__repo = __repo
-
 
     def add(self,user):
         userfound = self.__repo.getOne(user.get_id())
@@ -37,8 +34,5 @@ class UserService:
         userfound = self.__repo.getOne(user.get_id())
         if (userfound == None):
             raise ValueError("User with given id does not exist.")
-
         self.__repo.update(user)
-
         return user
-
