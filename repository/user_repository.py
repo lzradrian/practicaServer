@@ -4,28 +4,28 @@ class UserRepository:
         users = User.query.all()
         return users
 
-    def getOne(self,id):
+    def getOne(self, id):
         from domain.user import User
         user = User.query.get(id)
         return user
 
-    def getOneByUsername(self,id):
+    def getOneByUsername(self, id):
         from domain.user import User
         user = User.query.filter_by(username=id).first()
         return user
 
-    def add(self,user):
+    def add(self, user):
         from controller import db
         db.session.add(user)
         db.session.commit()
         return user
 
-    def remove(self,user):
+    def remove(self, user):
         from controller import db
         db.session.delete(user)
         db.session.commit()
 
-    def update(self,user):
+    def update(self, user):
         from controller import db
         from domain.user import User
         userfound = User.query.get(user.get_id())

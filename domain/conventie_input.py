@@ -11,7 +11,7 @@ class ConventieInput(db.Model):
     completedByCadruDidacticSupervizor = db.Column("completedByCadruDidacticSupervizor", db.BOOLEAN)
     completedByDecan = db.Column("completedByDecan", db.BOOLEAN)
 
-    def __init__(self ,content):
+    def __init__(self, content):
         self.content = content
         self.completedByStudent = False
         self.completedByFirmaResponsabil = False
@@ -34,10 +34,10 @@ class ConventieInput(db.Model):
     def set_completedByFirmaTutori(self, value):
         self.completedByFirmaTutori = value
 
-    def set_completedByCadruDidacticSupervizor(self,value):
+    def set_completedByCadruDidacticSupervizor(self, value):
         self.completedByCadruDidacticSupervizor = value
 
-    def set_completedByDecan(self,value):
+    def set_completedByDecan(self, value):
         self.completedByDecan = value
 
     def get_id(self):

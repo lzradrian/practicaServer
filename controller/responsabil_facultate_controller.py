@@ -1,18 +1,12 @@
-from flask import Blueprint , render_template,session,request,url_for
+from flask import Blueprint, render_template, session, request, url_for
 
 from controller.helpers.authorize import verify_role
 
-responsabil_facultate = Blueprint('responsabil_facultate',__name__)
+responsabil_facultate = Blueprint('responsabil_facultate', __name__)
 
 
-@responsabil_facultate.route('/responsabil_facultate',methods=["POST","GET"])
+@responsabil_facultate.route('/responsabil_facultate', methods=["GET"])
 def home():
-    if request.method == "POST":
-        if request.form.get('responsabilFacultateAcordButton'):
-            pass
-            #return render_template("--.html")
-
-    else:
-        if verify_role(6) == 0:
-            return render_template("home.html")
-        return render_template("homeResponsabilFacultate.html")
+    if verify_role(6) == 0:
+        return render_template("home.html")
+    return render_template("responsabilFacultate/homeResponsabilFacultate.html")

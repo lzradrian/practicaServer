@@ -12,3 +12,5 @@ controller/__pycache__/__init__.cpython-38.pyc
 *.cache
 *.pyc
 repository/__pycache__/user_repository.cpython-38.pyc
+*.pyc
+*.pyc

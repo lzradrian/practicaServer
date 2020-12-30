@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Documente Practica</title>
-	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="../styles.css">
 </head>
 <body>
 	<div class="documentDiv" style="top: 20%; left: 15%">
@@ -19,7 +19,7 @@
 	</div>
 	<div class="documentDiv" style="top: 20%; right: 15%">
 		<h2>Conventie de Practica</h2>
-		<form action="conventieStudent.html" class="documentButtonForm">
+		<form action="{{ url_for('student.conventie') }}" class="documentButtonForm">
 			<input type="submit" class="documentButton" value="Completare">
 		</form>
 	</div>

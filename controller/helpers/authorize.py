@@ -6,6 +6,7 @@ from flask_principal import Permission, RoleNeed
 
 from repository.user_repository import UserRepository
 from service.user_service import UserService
+
 userRepo = UserRepository()
 userService = UserService(userRepo)
 
@@ -25,8 +26,9 @@ def verify_role(role):
         return 0
     return 1
 
-#tried to create a decorator function to check for authentification and role
-#not working
+
+# tried to create a decorator function to check for authentification and role
+# not working
 def auth_required_with_role(role):
     def decorator(f):
         @wraps(f)
@@ -39,7 +41,7 @@ def auth_required_with_role(role):
                 return redirect(url_for('auth.login'))
 
             return f(*args, **kwargs)
+
         return decorated_function
+
     return decorator
-
-

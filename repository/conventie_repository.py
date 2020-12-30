@@ -5,23 +5,23 @@ class ConventieRepository:
         conventii = ConventieInput.query.all()
         return conventii
 
-    def getOne(self,id):
+    def getOne(self, id):
         from domain.conventie_input import ConventieInput
-        conventie =ConventieInput.query.get(id)
+        conventie = ConventieInput.query.get(id)
         return conventie
 
-    def add(self,conventie):
+    def add(self, conventie):
         from controller import db
         db.session.add(conventie)
         db.session.commit()
         return conventie
 
-    def remove(self,conventie):
+    def remove(self, conventie):
         from controller import db
         db.session.delete(conventie)
         db.session.commit()
 
-    def update(self,conventie):
+    def update(self, conventie):
         from controller import db
         from domain.conventie_input import ConventieInput
         conventiefound = ConventieInput.query.get(conventie.get_id())

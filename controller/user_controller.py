@@ -28,7 +28,7 @@ def login():
             found_user = userService.getOneByUsername(username)
         except ValueError as err:
             flash("Incorect credentials!")
-            return render_template("login.html")
+            return render_template("user/login.html")
 
         if found_user and found_user.get_password() == password:
             if (found_user.get_role() == 0):
@@ -55,15 +55,15 @@ def login():
                 session["role"] = 7
                 return redirect(url_for("decan.home"))
             else:
-                return render_template("login.html")
+                return render_template("user/login.html")
         else:
             flash("Incorect password!")
-            return render_template("login.html")
+            return render_template("user/login.html")
     else:  # GET
         if "user" in session:
             flash("Already logged in!")
-            return render_template("login.html")
-        return render_template("login.html")
+            return render_template("user/login.html")
+        return render_template("user/login.html")
 
 
 @auth.route("/logout")
@@ -72,6 +72,6 @@ def logout():
         flash("You have been logged out!", "info")
 
     session.pop("username", None)
-    session.pop("role",None)
+    session.pop("role", None)
 
     return redirect(url_for("auth.login"))

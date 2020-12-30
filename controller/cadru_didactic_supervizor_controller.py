@@ -1,13 +1,13 @@
-from flask import Blueprint , redirect,flash,render_template,session,request,url_for
+from flask import Blueprint, redirect, flash, render_template, session, request, url_for
 
 from controller.helpers.authorize import verify_role
 from repository.conventie_repository import ConventieRepository
 from service.conventie_service import ConventieService
 
-cadru_didactic_supervizor = Blueprint('cadru_didactic_supervizor',__name__)
+cadru_didactic_supervizor = Blueprint('cadru_didactic_supervizor', __name__)
 
 
-def modify_conventie_input_txt(conventie,nume):
+def modify_conventie_input_txt(conventie, nume):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
@@ -22,7 +22,7 @@ def modify_conventie_input_txt(conventie,nume):
         line = line.replace("SupervisorEmail Email", "SupervisorEmail " + nume)
         line = line.replace("SupervisorPhone Phone", "SupervisorPhone " + nume)
         line = line.replace("SupervisorFax Fax", "SupervisorFax " + nume)
-        #todo: alte date
+        # todo: alte date
 
         replaced_content = replaced_content + line
 
@@ -38,35 +38,33 @@ def modify_conventie_input_txt(conventie,nume):
 def conventie():
     if request.method == "POST":
 
+        # todo: sa poata modifica doar conventiile studentilor pe care ii supervizeaza
         conventieRepo = ConventieRepository()
         conventieService = ConventieService(conventieRepo)
         conventii = conventieService.getAll()
         conventieDeModificat = None
         for conventie in conventii:
-            if conventie.get_completedByStudent()==True and conventie.get_completedByFirmaResponsabil()==True and conventie.get_completedByFirmaTutori()==True and conventie.get_completedByCadruDidacticSupervizor()==False:
-                conventieDeModificat=conventie
+            if conventie.get_completedByStudent() == True and conventie.get_completedByFirmaResponsabil() == True and conventie.get_completedByFirmaTutori() == True and conventie.get_completedByCadruDidacticSupervizor() == False:
+                conventieDeModificat = conventie
                 break
 
-        if conventieDeModificat==None:
+        if conventieDeModificat == None:
             print("Nu s-a gasit o conventie de modificat")
-            return render_template("conventieCadruDidacticSupervizor.html")
+            return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
 
         # todo: put real data from forms
-        #numeFirma = request.form["numeFirma"]
-        nume = "numeCadruDidacticSuperviz"
+        # numeFirma = request.form["numeFirma"]
+        nume = "CADRUDIDACTICSUPERVIZOR"
 
-        modify_conventie_input_txt(conventieDeModificat,nume)
+        modify_conventie_input_txt(conventieDeModificat, nume)
 
-
-        return render_template("conventieCadruDidacticSupervizor.html")
+        return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
     else:
-        return render_template("conventieCadruDidacticSupervizor.html")
+        return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
 
 
-@cadru_didactic_supervizor.route('/cadru_didactic_supervizor',methods=["GET"])
+@cadru_didactic_supervizor.route('/cadru_didactic_supervizor', methods=["GET"])
 def home():
-
     if verify_role(5) == 0:
         return render_template("home.html")
-    return render_template("homeCadruDidacticSupervizor.html")
-
+    return render_template("cadruDidacticSupervizor/homeCadruDidacticSupervizor.html")
