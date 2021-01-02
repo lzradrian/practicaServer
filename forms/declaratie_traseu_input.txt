@@ -1,0 +1,20 @@
+HomeToWorkAddress HomeToWork
+WorkAddress WorkAddress
+WorkToHomeAddress WorkToHome
+WorkToHomeRoute WorkToHome1; WorkToHome2
+HomeToWorkRoute HomeToWork1; HomeToWork2
+RouteSignDate 2020.10.10
+StudentName Name
+StudentGroup Group
+StudentFaculty Faculty
+StudentPNC 12345678
+PublicTransport 1
+Metro 0
+PersonalVehicle 1
+PublicVehicle 0
+Plane 0
+AsPedestrian 1
+Bicycle 0
+Motorcycle 0
+HomeToWorkDate 2020.10.10
+WorkToHomeDate 2020.10.10
