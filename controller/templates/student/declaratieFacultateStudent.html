@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Documente Practica</title>
+	<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+	<div class="documentDiv" style="height: 105%; width: 30%;top: 5%; left: 35%">
+		<h2>Date Practica la Facultate</h2><br>
+		<form action="{{ url_for('student.student_uni_declaration') }}" method="post" style="width: 100%">
+			<label for="interval">Interval Practica:</label><br>
+			<input type="text" id="interval" name="interval"><br><br>
+
+			<label for="address">Adresa:</label><br>
+			<input type="text" id="address" name="address"><br><br>
+
+			<label for="coordinator">Coordonator:</label><br>
+			<input type="text" id="coordinator" name="coordinator"><br><br>
+
+			<label for="date">Data:</label><br>
+			<input type="text" id="date" name="date"><br><br>
+
+			<label for="signature">Semnatura:</label><br>
+			<input type="text" id="signature" name="signature"><br><br><br>
+			<input type="submit" value="Completeaza">
+		</form>
+	</div>
+</body>
+</html>

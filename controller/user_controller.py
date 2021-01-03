@@ -1,70 +1,77 @@
-from flask import Blueprint , redirect,flash,render_template,session,request,url_for
-
-users = Blueprint('users',__name__)
-auth = Blueprint('auth', __name__)
+from flask import Blueprint, redirect, flash, render_template, session, request, url_for, current_app
+from flask_principal import identity_changed, Identity, AnonymousIdentity
 
 from repository.user_repository import UserRepository
 from service.user_service import UserService
 
+auth = Blueprint('auth', __name__)
+
 userRepo = UserRepository()
 userService = UserService(userRepo)
 
-
-@users.route('/')
-def index():
-    #return "hello"
+@auth.route("/")
+def home():
     return render_template("home.html")
 
-@auth.route('/login',methods=["POST","GET"])
+
+@auth.route('/login', methods=["POST", "GET"])
 def login():
-    if request.method=="POST":
-        session.permanent = True
-        username=request.form["username"]
+    if request.method == "POST":
+        username = request.form["username"]
         password = request.form["password"]
-        session["user"]=username
+
+        session.permanent = True
+        session["username"] = username
+        session["id"] = userService.getOneByUsername(username).get_id()
 
         try:
             found_user = userService.getOneByUsername(username)
         except ValueError as err:
             flash("Incorect credentials!")
-            return render_template("login.html")
+            return render_template("user/login.html")
 
         if found_user and found_user.get_password() == password:
-            flash("Login succesful!")
-            return redirect(url_for("users.user"))
-
-
-    else:
+            if (found_user.get_role() == 0):
+                session["role"] = 0
+                return redirect(url_for("student.home"))
+            if (found_user.get_role() == 1):
+                session["role"] = 1
+                return redirect(url_for("responsabil_firma.home"))
+            if (found_user.get_role() == 2):
+                session["role"] = 2
+                return redirect(url_for("tutore_firma.home"))
+            if (found_user.get_role() == 3):
+                session["role"] = 3
+                return redirect(url_for("secretara.home"))
+            if (found_user.get_role() == 4):
+                pass
+            if (found_user.get_role() == 5):
+                session["role"] = 5
+                return redirect(url_for("cadru_didactic_supervizor.home"))
+            if (found_user.get_role() == 6):
+                session["role"] = 6
+                return redirect(url_for("responsabil_facultate.home"))
+            if (found_user.get_role() == 7):
+                session["role"] = 7
+                return redirect(url_for("decan.home"))
+            else:
+                return render_template("user/login.html")
+        else:
+            flash("Incorect password!")
+            return render_template("user/login.html")
+    else:  # GET
         if "user" in session:
             flash("Already logged in!")
-            return redirect(url_for("users.user"))
-        return render_template("login.html")
+            return render_template("user/login.html")
+        return render_template("user/login.html")
 
 
-@users.route("/user",methods=["POST","GET"])
-def user():
-    email=None
-
-    if "user" in session:
-        user=session["user"]
-        if request.method=="POST":
-            email=request.form["email"]
-            session["email"]=email
-            flash("email was saved")
-        else:
-            if "email" in session:
-                email=session["email"]
-        return render_template("user.html",email=email)
-    else:
-        flash("You are not logged in!")
-        return redirect(url_for("auth.login"))
-
-@users.route("/logout")
+@auth.route("/logout")
 def logout():
-    if "user" in session:
-        user=session["user"]
+    if "username" in session:
         flash("You have been logged out!", "info")
-    session.pop("user",None)
-    session.pop("email", None)
+
+    session.pop("username", None)
+    session.pop("role", None)
 
     return redirect(url_for("auth.login"))
