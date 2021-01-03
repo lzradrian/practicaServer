@@ -26,11 +26,12 @@ app.config.from_object('database.database_config.Config')
 db = SQLAlchemy(app)
 
 if __name__ == '__main__':
-
+    # db.metadata.clear()
     # todo: conventie, art 4  de cine trebuie completat?
     # todo: conventie, art 9, de cine trebuie completat? cadruDidacticSupervizor sau Decan? scrie facultate pe site.
     # todo: conventie, cadruDidacticSupervizor si Decan : trebuiesc puse date reale din form-uri (inca necreate)
     # todo: modificari in db astfel incat -tutoreFirma,cadruDidacticSuperv sa poate modifica doar conventiile studentilor pe care ii supervizeaza
     # todo:                               -responsabilFirma sa poata modifica doar conventiile studentilor de la firma sa
-    app.run()
 
+    # todo: conventie-reprez-firma (preluarea datelor firmei din clasa CompanyInfo, ca la acord)
+    app.run()

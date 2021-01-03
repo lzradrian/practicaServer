@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Documente Practica</title>
-	<link rel="stylesheet" href="../styles.css">
+    <title>Documente Practica</title>
+    <link href="../styles.css" rel="stylesheet">
 </head>
 <body>
-	<div class="documentDiv" style="top: 20%; left: 15%">
-		<h2>Documente pentru Protectia Muncii</h2>
-		<form action="declaratieFirmaStudent.html" class="documentButtonForm">
-			<input type="submit" class="documentButton" name="studentFirmaButton" value="Declaratie Practica la Firma">
-		</form>
-		<form action="declaratieFacultateStudent.html" class="documentButtonForm">
-			<input type="submit" class="documentButton" name="studentUbbButton" value="Declaratie Practica la UBB">
-		</form>
-		<form action="traseuStudent.html" class="documentButtonForm">
-			<input type="submit" class="documentButton" name="studentTraseuButton" value="Declaratie de Traseu">
-		</form>
-	</div>
-	<div class="documentDiv" style="top: 20%; right: 15%">
-		<h2>Conventie de Practica</h2>
-		<form action="{{ url_for('student.conventie') }}" class="documentButtonForm">
-			<input type="submit" class="documentButton" value="Completare">
-		</form>
-	</div>
+<div class="documentDiv" style="top: 20%; left: 15%">
+    <h2>Documente pentru Protectia Muncii</h2>
+    <form action="declaratieFirmaStudent.html" class="documentButtonForm">
+        <input class="documentButton" name="studentFirmaButton" type="submit" value="Declaratie Practica la Firma">
+    </form>
+    <form action="declaratieFacultateStudent.html" class="documentButtonForm">
+        <input class="documentButton" name="studentUbbButton" type="submit" value="Declaratie Practica la UBB">
+    </form>
+    <form action="traseuStudent.html" class="documentButtonForm">
+        <input class="documentButton" name="studentTraseuButton" type="submit" value="Declaratie de Traseu">
+    </form>
+</div>
+<div class="documentDiv" style="top: 20%; right: 15%">
+    <h2>Conventie de Practica</h2>
+    <form action="{{ url_for('student.conventie') }}" class="documentButtonForm">
+        <input class="documentButton" type="submit" value="Completare">
+    </form>
+</div>
 </body>
 </html>

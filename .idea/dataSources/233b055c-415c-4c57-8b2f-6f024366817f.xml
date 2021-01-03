@@ -24,101 +24,66 @@
       <Position>2</Position>
       <DataType>VARCHAR|0s</DataType>
     </column>
-    <column id="11" parent="6" name="completedByStudent">
+    <column id="11" parent="6" name="completedByFirmaReprezentant">
       <Position>3</Position>
       <DataType>BOOLEAN|0s</DataType>
     </column>
-    <column id="12" parent="6" name="completedByFirmaResponsabil">
+    <column id="12" parent="6" name="completedByDepJuridicUBB">
       <Position>4</Position>
       <DataType>BOOLEAN|0s</DataType>
     </column>
-    <column id="13" parent="6" name="completedByFirmaTutori">
-      <Position>5</Position>
-      <DataType>BOOLEAN|0s</DataType>
-    </column>
-    <column id="14" parent="6" name="completedByCadruDidacticSupervizor">
-      <Position>6</Position>
-      <DataType>BOOLEAN|0s</DataType>
-    </column>
-    <column id="15" parent="6" name="completedByDecan">
-      <Position>7</Position>
-      <DataType>BOOLEAN|0s</DataType>
-    </column>
-    <column id="16" parent="6" name="completedByFirmaReprezentant">
-      <Position>8</Position>
-      <DataType>BOOLEAN|0s</DataType>
-    </column>
-    <column id="17" parent="6" name="completedByDepJuridicUBB">
-      <Position>9</Position>
-      <DataType>BOOLEAN|0s</DataType>
-    </column>
-    <key id="18" parent="6">
+    <key id="13" parent="6">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <check id="19" parent="6">
-      <Predicate>&quot;completedByCadruDidacticSupervizor&quot; IN (0, 1)</Predicate>
-    </check>
-    <check id="20" parent="6">
-      <Predicate>&quot;completedByDecan&quot; IN (0, 1)</Predicate>
-    </check>
-    <check id="21" parent="6">
+    <check id="14" parent="6">
       <Predicate>&quot;completedByDepJuridicUBB&quot; IN (0, 1)</Predicate>
     </check>
-    <check id="22" parent="6">
+    <check id="15" parent="6">
       <Predicate>&quot;completedByFirmaReprezentant&quot; IN (0, 1)</Predicate>
     </check>
-    <check id="23" parent="6">
-      <Predicate>&quot;completedByFirmaResponsabil&quot; IN (0, 1)</Predicate>
-    </check>
-    <check id="24" parent="6">
-      <Predicate>&quot;completedByFirmaTutori&quot; IN (0, 1)</Predicate>
-    </check>
-    <check id="25" parent="6">
-      <Predicate>&quot;completedByStudent&quot; IN (0, 1)</Predicate>
-    </check>
-    <column id="26" parent="7" name="id">
+    <column id="16" parent="7" name="id">
       <Position>1</Position>
       <DataType>INTEGER|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="27" parent="7" name="username">
+    <column id="17" parent="7" name="username">
       <Position>2</Position>
       <DataType>VARCHAR|0s</DataType>
     </column>
-    <column id="28" parent="7" name="password">
+    <column id="18" parent="7" name="password">
       <Position>3</Position>
       <DataType>VARCHAR|0s</DataType>
     </column>
-    <column id="29" parent="7" name="email">
+    <column id="19" parent="7" name="email">
       <Position>4</Position>
       <DataType>VARCHAR|0s</DataType>
     </column>
-    <column id="30" parent="7" name="role">
+    <column id="20" parent="7" name="role">
       <Position>5</Position>
       <DataType>SMALLINT|0s</DataType>
     </column>
-    <key id="31" parent="7">
+    <key id="21" parent="7">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="32" parent="8" name="type">
+    <column id="22" parent="8" name="type">
       <Position>1</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="33" parent="8" name="name">
+    <column id="23" parent="8" name="name">
       <Position>2</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="34" parent="8" name="tbl_name">
+    <column id="24" parent="8" name="tbl_name">
       <Position>3</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="35" parent="8" name="rootpage">
+    <column id="25" parent="8" name="rootpage">
       <Position>4</Position>
       <DataType>int|0s</DataType>
     </column>
-    <column id="36" parent="8" name="sql">
+    <column id="26" parent="8" name="sql">
       <Position>5</Position>
       <DataType>text|0s</DataType>
     </column>

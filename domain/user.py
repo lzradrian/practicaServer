@@ -10,14 +10,14 @@ class User(db.Model):
     role = db.Column('role', db.SmallInteger)
 
     def __init__(self, id, username, password, email, role):
-        self.id = id
+        self._id = id
         self.username = username
         self.password = password
         self.email = email
         self.role = role
 
     def set_id(self, value):
-        self.id = value
+        self._id = value
 
     def set_name(self, value):
         self.username = value
@@ -32,7 +32,7 @@ class User(db.Model):
         self.role = value
 
     def get_id(self):
-        return self.id
+        return self._id
 
     def get_name(self):
         return self.username
