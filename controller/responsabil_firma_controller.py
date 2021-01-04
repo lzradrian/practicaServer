@@ -9,6 +9,7 @@ from service.conventie_service import ConventieService
 from service.acord_service import AcordService
 from service.user_service import UserService
 from service.company_info_service import CompanyInfoService
+from service.conventie_service import ConventieService
 
 responsabil_firma = Blueprint('responsabil_firma', __name__)
 

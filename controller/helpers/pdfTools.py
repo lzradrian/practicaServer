@@ -51,3 +51,5 @@ def create_pdf_from_conventie(fisier_input_pdf, fisier_output_pdf, conventie):
 
     # delete used file
     os.remove(conventie_input_txt_location)
+
+

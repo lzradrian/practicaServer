@@ -6,7 +6,6 @@ from service.conventie_service import ConventieService
 
 student = Blueprint('student', __name__)
 
-
 def create_conventie_input_txt(name, country, city, street, number, apartment, county, phone, email, cnp, series, id,
                                birthdate, birthcity, birthcounty, function, year, group, specialty, lineOfStudy, date,
                                signature):
@@ -36,7 +35,7 @@ def create_conventie_input_txt(name, country, city, street, number, apartment, c
         line = line.replace("StudentSpecialization Spec", "StudentSpecialization " + specialty)
         line = line.replace("StudentNationality Nationality", "StudentNationality " + country)
         line = line.replace("StudentGroup Group", "StudentGroup " + group)
-        line = line.replace("StudentYear Year", "StudentYear " + year)
+        line = line.replace("StudentYear Year", "StudentYear " + str(year))
         line = line.replace("StudentICSeries 123", "StudentICSeries " + series)
         line = line.replace("StudentStreetNo 123", "StudentStreetNo " + number)
         line = line.replace("StudentICNo 123", "StudentICNo " + id)
@@ -58,8 +57,23 @@ def create_conventie_input_txt(name, country, city, street, number, apartment, c
 @student.route("/student_conventie", methods=["POST", "GET"])
 def conventie():
     if request.method == "POST":
+        from repository.student_info_repository import StudentInfoRepository
+        from service.student_info_service import StudentInfoService
+        from domain.student_info import StudentInfo
 
-        name = request.form["name"]
+        repo = StudentInfoRepository
+        service = StudentInfoService(repo)
+
+        info = service.get_by_student_id(session["id"])
+
+        name = info.name
+        cnp = info.pnc
+        function = info.student_function
+        year = info.year
+        group = info.group
+        specialty = info.specialization
+        line = info.study_line
+
         country = request.form["country"]
         city = request.form["city"]
         street = request.form["street"]
@@ -68,17 +82,11 @@ def conventie():
         county = request.form["county"]
         phone = request.form["phone"]
         email = request.form["email"]
-        cnp = request.form["cnp"]
         series = request.form["series"]
         id = request.form["id"]
         birthdate = request.form["birthdate"]
         birthcity = request.form["birthcity"]
         birthcounty = request.form["birthcounty"]
-        function = request.form["function"]
-        year = request.form["year"]
-        group = request.form["group"]
-        specialty = request.form["specialty"]
-        line = request.form["line"]
         date = request.form["date"]
         signature = request.form["signature"]
 
@@ -89,6 +97,86 @@ def conventie():
         return render_template("student/conventieStudent.html")
     else:
         return render_template("student/conventieStudent.html")
+
+
+@student.route("/student_company_declaration", methods=["POST", "GET"])
+def student_company_declaration():
+    if request.method == "POST":
+        from repository.student_info_repository import StudentInfoRepository
+        from service.student_info_service import StudentInfoService
+        from domain.student_info import StudentInfo
+        from datetime import date
+        from domain.declaratie_firma_file import fields
+        from form_utility import write_to_file, generate_pdf
+
+        repo = StudentInfoRepository
+        service = StudentInfoService(repo)
+
+        info = service.get_by_student_id(session["id"])
+
+        date = str(date.today())
+        params = [info.name, info.group, info.specialization, info.year,
+                  request.form["interval"], date, request.form["address"],
+                  request.form["firm"], request.form["coordinator"]]
+        pair_input = dict(zip(fields.keys(), params))
+        write_to_file("company_declaration_input.txt", pair_input)
+        generate_pdf("../forms/DeclaratieActivitateFirma.pdf",
+                     "DeclaratieActivitateFirma-" + info.name,
+                     "company_declaration_input.txt")
+    return render_template("student/declaratieFirmaStudent.html")
+
+
+@student.route("/student_uni_declaration", methods=["POST", "GET"])
+def student_uni_declaration():
+    if request.method == "POST":
+        from repository.student_info_repository import StudentInfoRepository
+        from service.student_info_service import StudentInfoService
+        from domain.student_info import StudentInfo
+        from datetime import date
+        from domain.declaratie_ubb_file import fields
+        from form_utility import write_to_file, generate_pdf
+
+        repo = StudentInfoRepository
+        service = StudentInfoService(repo)
+
+        info = service.get_by_student_id(session["id"])
+
+        date = str(date.today())
+        params = [info.name, info.group, info.specialization, info.year,
+                  request.form["interval"], date, request.form["address"],
+                  request.form["coordinator"]]
+        pair_input = dict(zip(fields.keys(), params))
+        write_to_file("uni_declaration_input.txt", pair_input)
+        generate_pdf("../forms/DeclaratieActivitateFirma.pdf",
+                     "DeclaratieActivitateFirma-" + info.name,
+                     "company_declaration_input.txt")
+    return render_template("student/declaratieFacultateStudent.html")
+
+
+@student.route("/student_info", methods=["POST", "GET"])
+def student_info():
+    if request.method == "POST":
+        student_id = session["id"]
+        name = request.form["name"]
+        pnc = request.form["pnc"]
+        student_function = request.form["student_function"]
+        year = request.form["year"]
+        group = request.form["group"]
+        specialization = request.form["specialization"]
+        study_line = request.form["specialization"]
+
+        from repository.student_info_repository import StudentInfoRepository
+        from service.student_info_service import StudentInfoService
+        from domain.student_info import StudentInfo
+
+        repo = StudentInfoRepository
+        service = StudentInfoService(repo)
+        try:
+            service.add(StudentInfo(0, student_id, name, pnc, student_function,
+                                    year, group, specialization, study_line))
+        except ValueError:
+            return render_template("error.html")
+    return render_template("student/infoStudent.html")
 
 
 # @auth_required_with_role(0)

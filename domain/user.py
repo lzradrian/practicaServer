@@ -3,21 +3,21 @@ from controller import db
 
 class User(db.Model):
     __tablename__ = 'Users'
-    _id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
     username = db.Column("username", db.String)
     password = db.Column("password", db.String)
     email = db.Column("email", db.String)
     role = db.Column('role', db.SmallInteger)
 
     def __init__(self, id, username, password, email, role):
-        self._id = id
+        self.id = id
         self.username = username
         self.password = password
         self.email = email
         self.role = role
 
     def set_id(self, value):
-        self._id = value
+        self.id = value
 
     def set_name(self, value):
         self.username = value

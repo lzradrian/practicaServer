@@ -22,6 +22,7 @@ app.register_blueprint(decan_controller.decan)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = '123abc7891337'
+app.config['TEMPLATES_AUTO_RELOAD'] = 'True'
 app.config.from_object('database.database_config.Config')
 db = SQLAlchemy(app)
 
@@ -34,4 +35,5 @@ if __name__ == '__main__':
     # todo:                               -responsabilFirma sa poata modifica doar conventiile studentilor de la firma sa
 
     # todo: conventie-reprez-firma (preluarea datelor firmei din clasa CompanyInfo, ca la acord)
-    app.run()
+    app.run(debug=True)
+
