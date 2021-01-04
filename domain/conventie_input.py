@@ -1,5 +1,6 @@
 from controller import db
 
+fields = [(), ]
 
 class ConventieInput(db.Model):
     __tablename__ = 'ConventieInput'

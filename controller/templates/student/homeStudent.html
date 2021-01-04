@@ -5,12 +5,18 @@
 	<link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+	<div class="infoDiv" style="top: 20%; left: 15%">
+		<h2>Completare date generale</h2>
+		<form action="{{ url_for('student.student_info') }}" class="documentButtonForm">
+			<input type="submit" class="documentButton" name="studentInfoButton" value="Completeaza">
+		</form>
+	</div>
 	<div class="documentDiv" style="top: 20%; left: 15%">
 		<h2>Documente pentru Protectia Muncii</h2>
-		<form action="declaratieFirmaStudent.html" class="documentButtonForm">
+		<form action="{{ url_for('student.student_company_declaration') }}" class="documentButtonForm">
 			<input type="submit" class="documentButton" name="studentFirmaButton" value="Declaratie Practica la Firma">
 		</form>
-		<form action="declaratieFacultateStudent.html" class="documentButtonForm">
+		<form action="{{ url_for('student.student_uni_declaration') }}" class="documentButtonForm">
 			<input type="submit" class="documentButton" name="studentUbbButton" value="Declaratie Practica la UBB">
 		</form>
 		<form action="traseuStudent.html" class="documentButtonForm">

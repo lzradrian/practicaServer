@@ -7,20 +7,7 @@
 <body>
 	<div class="documentDiv" style="height: 105%; width: 30%;top: 5%; left: 35%">
 		<h2>Date Practica la Facultate</h2><br>
-		<form action="#" method="post" style="width: 100%">
-
-			<label for="name">Nume si Prenume:</label><br>
-			<input type="text" id="name" name="name"><br><br>
-
-			<label for="year">Anul universitar:</label><br>
-			<input type="text" id="year" name="year"><br><br>
-
-			<label for="group">Grupa:</label><br>
-			<input type="text" id="group" name="group"><br><br>
-
-			<label for="specialty">Specializarea:</label><br>
-			<input type="text" id="specialty" name="specialty"><br><br>
-
+		<form action="{{ url_for('student.student_uni_declaration') }}" method="post" style="width: 100%">
 			<label for="interval">Interval Practica:</label><br>
 			<input type="text" id="interval" name="interval"><br><br>
 

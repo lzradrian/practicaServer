@@ -3,7 +3,7 @@ from controller import db
 
 class User(db.Model):
     __tablename__ = 'Users'
-    _id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
     username = db.Column("username", db.String)
     password = db.Column("password", db.String)
     email = db.Column("email", db.String)

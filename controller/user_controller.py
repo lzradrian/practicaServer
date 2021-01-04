@@ -9,7 +9,6 @@ auth = Blueprint('auth', __name__)
 userRepo = UserRepository()
 userService = UserService(userRepo)
 
-
 @auth.route("/")
 def home():
     return render_template("home.html")
@@ -23,6 +22,7 @@ def login():
 
         session.permanent = True
         session["username"] = username
+        session["id"] = userService.getOneByUsername(username).get_id()
 
         try:
             found_user = userService.getOneByUsername(username)
@@ -73,5 +73,5 @@ def logout():
 
     session.pop("username", None)
     session.pop("role", None)
-
+    session.pop("id", None)
     return redirect(url_for("auth.login"))
