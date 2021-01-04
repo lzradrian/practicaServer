@@ -73,5 +73,5 @@ def logout():
 
     session.pop("username", None)
     session.pop("role", None)
-
+    session.pop("id", None)
     return redirect(url_for("auth.login"))

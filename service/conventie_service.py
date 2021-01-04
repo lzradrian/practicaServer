@@ -8,6 +8,12 @@ class ConventieService:
             raise ValueError("Already exists a conventie with given id")
         return self.__repo.add(conventie)
 
+    def add_or_update(self, conventie):
+        conventiefound = self.__repo.getOne(conventie.get_id())
+        if (conventiefound != None):
+            self.__repo.update(conventie)
+        return self.__repo.add(conventie)
+
     def getAll(self):
         conventii = self.__repo.getAll()
         return conventii

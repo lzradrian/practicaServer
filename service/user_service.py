@@ -3,7 +3,7 @@ class UserService:
         self.__repo = __repo
 
     def add(self, user):
-        user_found = self.__repo.getOne(user.get_id(), user.get_id())
+        user_found = self.__repo.getOne(user.get_id())
         if user_found is not None:
             raise ValueError("Already exists a user with given id")
         return self.__repo.add(user)

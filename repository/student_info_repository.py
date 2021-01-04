@@ -9,10 +9,12 @@ class StudentInfoRepository:
         student_info = StudentInfo.query.get(id)
         return student_info
 
+    '''
     def get_by_student_id(self, student_id):
         from domain.student_info import StudentInfo
         student_info = StudentInfo.query.filter_by(student_id=student_id).first()
         return student_info
+    '''
 
     def add(self, student_info):
         from controller import db
@@ -28,9 +30,7 @@ class StudentInfoRepository:
     def update(self, student_info):
         from controller import db
         from domain.student_info import StudentInfo
-        student_info_found = StudentInfo.query.get(student_info.id)
-        # todo
-        student_info_found.student_id = student_info.student_id
+        student_info_found = StudentInfo.query.get(student_info.get_id())
         student_info_found.name = student_info.name
         student_info_found.pnc = student_info.pnc
         student_info_found.student_function = student_info.student_function
@@ -38,4 +38,6 @@ class StudentInfoRepository:
         student_info_found.group = student_info.group
         student_info_found.specialization = student_info.specialization
         student_info_found.study_line = student_info.study_line
+        db.session.commit()
         return student_info
+

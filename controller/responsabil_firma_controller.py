@@ -14,10 +14,10 @@ from service.conventie_service import ConventieService
 responsabil_firma = Blueprint('responsabil_firma', __name__)
 
 
-def modify_conventie_input_txt(conventie, firm, city, street, number, phone, fax, email, code, account, banca,
-                               representative,
-                               function, address, hours, startInternshipDate, endInternshipDate, tutor, tutorfunction,
-                               tutorphone, tutorfax, tutormail, date, signature):
+def modify_conventie_input(conventie, firm, city, street, number, phone, fax, email, code, account, banca,
+                           representative,
+                           function, address, hours, startInternshipDate, endInternshipDate, tutor, tutorfunction,
+                           tutorphone, tutorfax, tutormail, date, signature):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
@@ -67,8 +67,8 @@ def modify_conventie_input_txt(conventie, firm, city, street, number, phone, fax
     conventieRepo = ConventieRepository()
     conventieService = ConventieService(conventieRepo)
     conventieService.update(conventie)
-    from controller.helpers.pdfTools import create_pdf_from_conventie
-    create_pdf_from_conventie("ConventiePractica.pdf", "output.pdf", conventie)
+    #from controller.helpers.pdfTools import create_pdf_from_files_and_doc
+    #create_pdf_from_files_and_doc("ConventiePractica.pdf", "output.pdf", conventie)
 
 
 @responsabil_firma.route('/conventie_responsabil_firma', methods=["POST", "GET"])
@@ -113,10 +113,10 @@ def conventie():
         tutormail = request.form["tutormail"]
         date = request.form["date"]
         signature = request.form["signature"]
-        modify_conventie_input_txt(conventieDeModificat, firm, city, street, number, phone, fax, email, code, account,
-                                   banca, representative,
-                                   function, address, hours, startInternshipDate, endInternshipDate, tutor,
-                                   tutorfunction, tutorphone, tutorfax, tutormail, date, signature)
+        modify_conventie_input(conventieDeModificat, firm, city, street, number, phone, fax, email, code, account,
+                               banca, representative,
+                               function, address, hours, startInternshipDate, endInternshipDate, tutor,
+                               tutorfunction, tutorphone, tutorfax, tutormail, date, signature)
 
         return render_template("firmaResponsabil/conventieResponsabilFirma.html")
     else:
@@ -171,8 +171,8 @@ def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, 
 
     acordServ.add(acord)
 
-    from controller.helpers.pdfTools import create_pdf_from_conventie
-    create_pdf_from_conventie("AcordPractica.pdf", "output.pdf", acord)
+    from controller.helpers.pdfTools import create_pdf_from_files_and_doc
+    create_pdf_from_files_and_doc("AcordPractica.pdf", "output.pdf", acord)
 
 
 @responsabil_firma.route('/acord_responsabil_firma', methods=["POST", "GET"])

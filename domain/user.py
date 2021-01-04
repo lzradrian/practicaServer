@@ -32,7 +32,7 @@ class User(db.Model):
         self.role = value
 
     def get_id(self):
-        return self._id
+        return self.id
 
     def get_name(self):
         return self.username
