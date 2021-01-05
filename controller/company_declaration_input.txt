@@ -2,8 +2,8 @@ StudentName xvxcv
 StudentGroup xcv
 StudentSpecialization xcv
 StudentYear 1
-DeclarationInternshipPeriod cvb
+DeclarationInternshipPeriod 1
 DeclarationSignDate 2021-01-03
-HomeAddress cvb
-CompanyName cvb
-CoordonatorName cvb
+HomeAddress 1
+CompanyName 1
+CoordonatorName 1

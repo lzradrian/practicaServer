@@ -116,8 +116,85 @@ def conventie():
         return render_template("firmaResponsabil/conventieResponsabilFirma.html")
 
 
+@responsabil_firma.route('/management', methods=["GET", "POST"])
+def management():
+    from service.utility import get_internship_service, get_student_internship_service, get_user_service
+
+    internship_service = get_internship_service()
+    student_internship_service = get_student_internship_service()
+    user_service = get_user_service()
+
+    internship = internship_service.get_by_representative_id(session["id"])
+    student_interships = student_internship_service.get_by_internship_id(internship.id)
+    students = []
+    for si in student_interships:
+        students.append(user_service.getOne(si.student_id))
+    headings = (("Nume Student",))
+    student_names = tuple([(student.username,) for student in students])
+    return render_template("firmaResponsabil/managementResponsabilFirma.html", headings=headings, data=student_names)
+
+@responsabil_firma.route('/add_student', methods=["GET", "POST"])
+def add_student():
+    if request.method == "POST":
+        from service.utility import get_internship_service, get_student_internship_service,\
+            get_user_service, get_student_info_service
+        from domain.student_internship import StudentInternship
+
+        name = request.form["name"]
+        year = request.form["year"]
+        group = request.form["group"]
+
+        internship_service = get_internship_service()
+        student_internship_service = get_student_internship_service()
+        student_info_service = get_student_info_service()
+
+        try:
+            student_info = student_info_service.get_by_identifiers(name, year, group)
+            internship = internship_service.get_by_representative_id(session["id"])
+            student_internship_service.add(StudentInternship(None, internship.id, student_info.student_id))
+        except ValueError:
+            return render_template("firmaResponsabil/managementResponsabilFirma.html", error="No student with given identifiers could be found!")
+    return render_template("firmaResponsabil/homeResponsabilFirma.html")
+
+
+@responsabil_firma.route('/start_internship', methods=["GET", "POST"])
+def start_internship():
+    if request.method == "POST":
+        from repository.internship_repository import InternshipRepository
+        from service.internship_service import InternshipService
+        from domain.internship import Internship
+        from datetime import datetime
+
+        repo = InternshipRepository()
+        service = InternshipService(repo)
+
+        responsabil_id = session["id"]
+        year = request.form["year"]
+        start_date = datetime.strptime(request.form["start_date"], '%Y-%m-%d')
+        end_date = datetime.strptime(request.form["end_date"], '%Y-%m-%d')
+
+        service.add(Internship(0, responsabil_id, year, start_date, end_date))
+
+    return render_template("firmaResponsabil/practicaResponsabilFirma.html")
+
 @responsabil_firma.route('/responsabil_firma', methods=["GET"])
 def home():
+    import datetime
+    from repository.internship_repository import InternshipRepository
+    from service.internship_service import InternshipService
+
+    repo = InternshipRepository()
+    service = InternshipService(repo)
+
+    active = False
+
+    try:
+        internship = service.get_by_representative_id(session["id"])
+        active = True
+    except ValueError:
+        pass
+
     if verify_role(1) == 0:
         return render_template("home.html")
-    return render_template("firmaResponsabil/homeResponsabilFirma.html")
+    year = datetime.datetime.now().year
+    return render_template("firmaResponsabil/homeResponsabilFirma.html", year=year, active=active)
