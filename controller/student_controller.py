@@ -1,14 +1,15 @@
 from flask import Blueprint, redirect, flash, render_template, session, request, url_for
 
 from controller.helpers.authorize import verify_role, auth_required_with_role
+from controller.helpers.pdfTools import create_pdf_from_dic
 from repository.conventie_repository import ConventieRepository
 from service.conventie_service import ConventieService
 
 student = Blueprint('student', __name__)
 
-def create_conventie_input_txt(name, country, city, street, number, apartment, county, phone, email, cnp, series, id,
-                               birthdate, birthcity, birthcounty, function, year, group, specialty, lineOfStudy, date,
-                               signature):
+def create_conventie_input(name, country, city, street, number, apartment, county, phone, email, cnp, series, id,
+                           birthdate, birthcity, function, year, group, specialty, lineOfStudy, date,
+                           signature):
     import os
     dir_location = os.getcwd()
     while dir_location[-1] != "\\":
@@ -51,7 +52,7 @@ def create_conventie_input_txt(name, country, city, street, number, apartment, c
     conventieService = ConventieService(conventieRepo)
     conventie = ConventieInput(replaced_content)
     conventie.set_completedByStudent(True)
-    conventieService.add(conventie)
+    conventieService.add_or_update(conventie)
 
 
 @student.route("/student_conventie", methods=["POST", "GET"])
@@ -60,21 +61,21 @@ def conventie():
         from repository.student_info_repository import StudentInfoRepository
         from service.student_info_service import StudentInfoService
         from domain.student_info import StudentInfo
-
-        repo = StudentInfoRepository
+        from domain.conventie_student_file import fields
+        repo = StudentInfoRepository()
         service = StudentInfoService(repo)
 
-        info = service.get_by_student_id(session["id"])
+        info = service.getOne(session["id"])
 
         name = info.name
         cnp = info.pnc
-        function = info.student_function
-        year = info.year
         group = info.group
         specialty = info.specialization
+        year = info.year
+        function = info.student_function
         line = info.study_line
 
-        country = request.form["country"]
+        country = request.form["nationality"]
         city = request.form["city"]
         street = request.form["street"]
         number = request.form["number"]
@@ -85,16 +86,39 @@ def conventie():
         series = request.form["series"]
         id = request.form["id"]
         birthdate = request.form["birthdate"]
-        birthcity = request.form["birthcity"]
-        birthcounty = request.form["birthcounty"]
-        date = request.form["date"]
-        signature = request.form["signature"]
+        birthcity = request.form["birthlocation"]
+        date = request.form["signdate"]
+        signature = request.form["signature"] #nefolosit ulterior
 
-        create_conventie_input_txt(name, country, city, street, number, apartment, county, phone, email, cnp, series,
-                                   id, birthdate, birthcity, birthcounty, function, year, group, specialty, line, date,
-                                   signature)
+        '''
+        #varianta2
+        #params = [info.name, info.pnc, info.group, info.specialization, info.year,
+        #          info.study_line,request.form["city"], request.form["street"],
+        #          request.form["number"],request.form["apartment"], request.form["county"] ,request.form["phone"],
+        #          request.form["email"],request.form["series"],request.form["id"], request.form["birthdate"],
+        #          request.form["birthlocation"] ,info.student_function,request.form["nationality"] ,request.form["signdate"]
+        #         ,info.name
+        #          ]
+        #pair_input = dict(zip(fields.keys(), params))
 
-        return render_template("student/conventieStudent.html")
+        #content=""
+        #for k, v in pair_input.items():
+        #    content= content+ str(k) + " "+ str(v) + "\n"
+
+        #from domain.conventie_input import ConventieInput
+        #conventieRepo = ConventieRepository()
+        #conventieService = ConventieService(conventieRepo)
+        #conventie = ConventieInput(content)
+        #conventie.set_completedByStudent(True)
+        #conventieService.add_or_update(conventie)
+
+        #create_pdf_from_dic("ConventiePractica.pdf", "outputConventie.pdf", pair_input)
+        '''
+        create_conventie_input(name, country, city, street, number, apartment, county, phone, email, cnp, series,
+                               id, birthdate, birthcity, function, year, group, specialty, line, date,
+                               signature)
+
+        return redirect(url_for("student.home"))
     else:
         return render_template("student/conventieStudent.html")
 
@@ -107,22 +131,27 @@ def student_company_declaration():
         from domain.student_info import StudentInfo
         from datetime import date
         from domain.declaratie_firma_file import fields
-        from form_utility import write_to_file, generate_pdf
+        from controller.form_utility import write_to_file, generate_pdf
+        from controller.helpers.pdfTools import create_pdf_from_dic
 
-        repo = StudentInfoRepository
+        repo = StudentInfoRepository()
         service = StudentInfoService(repo)
 
-        info = service.get_by_student_id(session["id"])
+        info = service.getOne(session["id"])
 
         date = str(date.today())
         params = [info.name, info.group, info.specialization, info.year,
                   request.form["interval"], date, request.form["address"],
                   request.form["firm"], request.form["coordinator"]]
         pair_input = dict(zip(fields.keys(), params))
+        create_pdf_from_dic("DeclaratieActivitateFirma.pdf", "outputFirma.pdf", pair_input)
+        '''
         write_to_file("company_declaration_input.txt", pair_input)
         generate_pdf("../forms/DeclaratieActivitateFirma.pdf",
                      "DeclaratieActivitateFirma-" + info.name,
                      "company_declaration_input.txt")
+        '''
+        return redirect(url_for("student.home"))
     return render_template("student/declaratieFirmaStudent.html")
 
 
@@ -134,22 +163,26 @@ def student_uni_declaration():
         from domain.student_info import StudentInfo
         from datetime import date
         from domain.declaratie_ubb_file import fields
-        from form_utility import write_to_file, generate_pdf
+        from controller.form_utility import write_to_file, generate_pdf
+        from controller.helpers.pdfTools import create_pdf_from_dic
 
-        repo = StudentInfoRepository
+        repo = StudentInfoRepository()
         service = StudentInfoService(repo)
 
-        info = service.get_by_student_id(session["id"])
-
+        info = service.getOne(session["id"])
         date = str(date.today())
         params = [info.name, info.group, info.specialization, info.year,
                   request.form["interval"], date, request.form["address"],
                   request.form["coordinator"]]
         pair_input = dict(zip(fields.keys(), params))
-        write_to_file("uni_declaration_input.txt", pair_input)
-        generate_pdf("../forms/DeclaratieActivitateFirma.pdf",
-                     "DeclaratieActivitateFirma-" + info.name,
-                     "company_declaration_input.txt")
+        create_pdf_from_dic("DeclaratieActivitateUBB.pdf","outputUBB.pdf",pair_input)
+        '''
+                write_to_file("company_declaration_input.txt", pair_input)
+                generate_pdf("../forms/DeclaratieActivitateFirma.pdf",
+                             "DeclaratieActivitateFirma-" + info.name,
+                             "company_declaration_input.txt")
+        '''
+        return redirect(url_for("student.home"))
     return render_template("student/declaratieFacultateStudent.html")
 
 
@@ -169,14 +202,19 @@ def student_info():
         from service.student_info_service import StudentInfoService
         from domain.student_info import StudentInfo
 
-        repo = StudentInfoRepository
+        repo = StudentInfoRepository()
         service = StudentInfoService(repo)
+        studentinfo = StudentInfo(student_id, name, pnc, student_function,
+                               year, group, specialization, study_line)
         try:
-            service.add(StudentInfo(0, student_id, name, pnc, student_function,
-                                    year, group, specialization, study_line))
+            service.add(studentinfo)
+            flash("Ati completat cu succes datele!")
         except ValueError:
-            return render_template("error.html")
-    return render_template("student/infoStudent.html")
+            service.update(studentinfo)
+            flash("Ati updatat cu succes datele!")
+        return redirect(url_for("student.home"))
+    else:
+        return render_template("student/infoStudent.html")
 
 
 # @auth_required_with_role(0)

@@ -1,0 +1,16 @@
+.idea/*
+controller/__pycache__/user_controller.cpython-38.pyc
+*.pyc
+controller/__pycache__/__init__.cpython-38.pyc
+controller/__pycache__/user_controller.cpython-38.pyc
+*.pyc
+controller/__pycache__/user_controller.cpython-38.pyc
+controller/__pycache__/user_controller.cpython-38.pyc
+controller/__pycache__/user_controller.cpython-38.pyc
+controller/__pycache__/__init__.cpython-38.pyc
+*.pyc
+*.cache
+*.pyc
+repository/__pycache__/user_repository.cpython-38.pyc
+*.pyc
+*.pyc

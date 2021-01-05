@@ -7,7 +7,7 @@ from service.conventie_service import ConventieService
 cadru_didactic_supervizor = Blueprint('cadru_didactic_supervizor', __name__)
 
 
-def modify_conventie_input_txt(conventie, nume):
+def modify_conventie_input(conventie, nume):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
@@ -56,7 +56,7 @@ def conventie():
         # numeFirma = request.form["numeFirma"]
         nume = "CADRUDIDACTICSUPERVIZOR"
 
-        modify_conventie_input_txt(conventieDeModificat, nume)
+        modify_conventie_input(conventieDeModificat, nume)
 
         return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
     else:

@@ -7,7 +7,7 @@ from service.conventie_service import ConventieService
 decan = Blueprint('decan', __name__)
 
 
-def modify_conventie_input_txt(conventie, nume):
+def modify_conventie_input(conventie, nume):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
@@ -50,10 +50,10 @@ def conventie():
         # numeFirma = request.form["numeFirma"]
         nume = "DECAN"
 
-        modify_conventie_input_txt(conventieDeModificat, nume)
+        modify_conventie_input(conventieDeModificat, nume)
 
-        from controller.helpers.pdfTools import create_pdf_from_conventie
-        create_pdf_from_conventie("ConventiePractica.pdf", "output.pdf", conventieDeModificat)
+        from controller.helpers.pdfTools import create_pdf_from_files_and_doc
+        create_pdf_from_files_and_doc("ConventiePractica.pdf", "output.pdf", conventieDeModificat)
 
         return render_template("decan/conventieDecan.html")
     else:

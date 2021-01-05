@@ -3,9 +3,9 @@ class StudentInfoService:
         self.__repo = __repo
 
     def add(self, student_info):
-        student_info_found = self.__repo.getOne(student_info.id)
+        student_info_found = self.__repo.getOne(student_info.get_id())
         if student_info_found is not None:
-            raise ValueError("Already exists a user with given id")
+            raise ValueError("Already exists a StudentInfo with given id")
         return self.__repo.add(student_info)
 
     def getAll(self):
@@ -15,9 +15,11 @@ class StudentInfoService:
     def getOne(self, id):
         student_info = self.__repo.getOne(id)
         if student_info is None:
-            raise ValueError("User with given id does not exist.")
+            raise ValueError("StudentInfo with given id does not exist.")
         return student_info
 
+    '''
+    #vezi domain: 1-1 relatie intre info si student
     def get_by_student_id(self, student_id):
         student_info = self.__repo.get_by_student_id(student_id)
         if student_info is None:
@@ -27,18 +29,18 @@ class StudentInfoService:
     def get_by_identifiers(self, name, year, group):
         student_info = self.__repo.get_by_identifiers(name, year, group)
         if student_info is None:
-            raise ValueError("User with given username does not exist.")
+            raise ValueError("StudentInfo with given student_id does not exist.")
         return student_info
-
+    '''
     def remove(self, id):
         student_info = self.__repo.getOne(id)
         if student_info is None:
-            raise ValueError("User with given id does not exist.")
+            raise ValueError("StudentInfo with given id does not exist.")
         self.__repo.remove(student_info)
 
     def update(self, student_info):
         student_info_found = self.__repo.getOne(student_info.get_id())
         if student_info_found is None:
-            raise ValueError("User with given id does not exist.")
+            raise ValueError("StudentInfo with given id does not exist.")
         self.__repo.update(student_info)
         return student_info

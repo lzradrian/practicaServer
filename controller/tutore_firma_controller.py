@@ -7,7 +7,7 @@ from service.conventie_service import ConventieService
 tutore_firma = Blueprint('tutore_firma', __name__)
 
 
-def modify_conventie_input_txt(conventie, name, function, signature):
+def modify_conventie_input(conventie, name, function, signature):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
@@ -53,7 +53,7 @@ def conventie():
         tutorfunction = request.form["tutorfunction"]
         signature = request.form["signature"]
 
-        modify_conventie_input_txt(conventieDeModificat, tutorname, tutorfunction, signature)
+        modify_conventie_input(conventieDeModificat, tutorname, tutorfunction, signature)
 
         return render_template("firmaTutore/conventieTutoreFirma.html")
     else:

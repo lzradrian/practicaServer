@@ -2,15 +2,22 @@ from flask import Blueprint, redirect, flash, render_template, session, request,
 
 from controller.helpers.authorize import verify_role
 from repository.conventie_repository import ConventieRepository
+from repository.acord_repository import AcordRepository
+from repository.company_info_repository import CompanyInfoRepository
+from repository.user_repository import UserRepository
+from service.conventie_service import ConventieService
+from service.acord_service import AcordService
+from service.user_service import UserService
+from service.company_info_service import CompanyInfoService
 from service.conventie_service import ConventieService
 
 responsabil_firma = Blueprint('responsabil_firma', __name__)
 
 
-def modify_conventie_input_txt(conventie, firm, city, street, number, phone, fax, email, code, account, banca,
-                               representative,
-                               function, address, hours, startInternshipDate, endInternshipDate, tutor, tutorfunction,
-                               tutorphone, tutorfax, tutormail, date, signature):
+def modify_conventie_input(conventie, firm, city, street, number, phone, fax, email, code, account, banca,
+                           representative,
+                           function, address, hours, startInternshipDate, endInternshipDate, tutor, tutorfunction,
+                           tutorphone, tutorfax, tutormail, date, signature):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
@@ -60,8 +67,8 @@ def modify_conventie_input_txt(conventie, firm, city, street, number, phone, fax
     conventieRepo = ConventieRepository()
     conventieService = ConventieService(conventieRepo)
     conventieService.update(conventie)
-    from controller.helpers.pdfTools import create_pdf_from_conventie
-    create_pdf_from_conventie("ConventiePractica.pdf", "output.pdf", conventie)
+    #from controller.helpers.pdfTools import create_pdf_from_files_and_doc
+    #create_pdf_from_files_and_doc("ConventiePractica.pdf", "output.pdf", conventie)
 
 
 @responsabil_firma.route('/conventie_responsabil_firma', methods=["POST", "GET"])
@@ -106,10 +113,10 @@ def conventie():
         tutormail = request.form["tutormail"]
         date = request.form["date"]
         signature = request.form["signature"]
-        modify_conventie_input_txt(conventieDeModificat, firm, city, street, number, phone, fax, email, code, account,
-                                   banca, representative,
-                                   function, address, hours, startInternshipDate, endInternshipDate, tutor,
-                                   tutorfunction, tutorphone, tutorfax, tutormail, date, signature)
+        modify_conventie_input(conventieDeModificat, firm, city, street, number, phone, fax, email, code, account,
+                               banca, representative,
+                               function, address, hours, startInternshipDate, endInternshipDate, tutor,
+                               tutorfunction, tutorphone, tutorfax, tutormail, date, signature)
 
         return render_template("firmaResponsabil/conventieResponsabilFirma.html")
     else:
@@ -176,6 +183,144 @@ def start_internship():
         service.add(Internship(0, responsabil_id, year, start_date, end_date))
 
     return render_template("firmaResponsabil/practicaResponsabilFirma.html")
+
+def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, companyStreet, companyStreetNo,
+                 companyPhone, fax, companyFiscalCode, companyBank, companyIBAN, companyLegalRepresentative,
+                 nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2):
+    import os
+    dir_location = os.getcwd()
+    while dir_location[-1] != "\\":
+        dir_location = dir_location[:-1]
+    dir_location_input = dir_location[:-1] + "\\forms\\acord_input.txt"
+
+    file = open(dir_location_input, "r")
+    replaced_content = ""
+
+    for line in file:
+        line = line.strip()
+        # todo: rezolve signature
+        line = line.replace("AccordYear 2020-2021", "AccordYear " + accordYear)
+        line = line.replace("InternshipLenghtDays 50", "InternshipLenghtDays " + noHours)  # hours
+        line = line.replace("AccordSignDate 10.10.2020", "AccordSignDate  " + accordSignDate)
+        line = line.replace("CompanyName Company", "CompanyName " + companyName)
+        line = line.replace("CompanyCity Cluj-Napoca", "CompanyCity " + companyCity)
+        line = line.replace("CompanyStreet Street", "CompanyStreet " + companyStreet)
+        line = line.replace("CompanyStreetNo 20db", "CompanyStreetNo " + companyStreetNo)
+        line = line.replace("CompanyPhone 1234567890", "CompanyPhone " + companyPhone)
+        line = line.replace("CompanyFax Fax", "CompanyFax " + fax)
+        line = line.replace("CompanyFiscalCode Code", "CompanyFiscalCode " + companyFiscalCode)
+        line = line.replace("CompanyBank Bank", "CompanyBank " + companyBank)
+        line = line.replace("CompanyIBAN IBAN", "CompanyIBAN " + companyIBAN)
+        line = line.replace("CompanyLegalRepresentative Representative",
+                            "CompanyLegalRepresentative " + companyLegalRepresentative)
+        line = line.replace("TotalNoStudents 20", "TotalNoStudents " + nrOfStudents)
+        line = line.replace("NoStudents1 10", "NoStudents1 " + noStudents1)
+        line = line.replace("NoStudents2 10", "NoStudents2 " + noStudents2)
+        line = line.replace("Specialization1 Informatica", "Specialization1 " + specialization1)
+        line = line.replace("Specialization2 Matematica-Informatica", "Specialization2 " + specialization2)
+        line = line.replace("Faculty2 Matematica-Informatica", "Faculty2 " + faculty2)
+        line = line.replace("Faculty1 Matematica-Informatica", "Faculty1 " + faculty1)
+
+        replaced_content = replaced_content + line + "\n"
+    file.close()
+
+    from domain.acordPractica import AcordPractica
+    acordRepo = AcordRepository()
+    acordServ = AcordService(acordRepo)
+    acord = AcordPractica(replaced_content)
+    acord.set_completedByFirmaReprezentant(True)
+
+    acordServ.add(acord)
+
+    from controller.helpers.pdfTools import create_pdf_from_files_and_doc
+    create_pdf_from_files_and_doc("AcordPractica.pdf", "output.pdf", acord)
+
+
+@responsabil_firma.route('/acord_responsabil_firma', methods=["POST", "GET"])
+def acord():
+    if verify_role(1) == 0:
+        return render_template("home.html")
+    repoUser = UserRepository()
+    serviceUser = UserService(repoUser)
+    idOfCurrentUser = serviceUser.getOneByUsername(session["username"]).get_id()
+    repoComp = CompanyInfoRepository()
+    serviceComp = CompanyInfoService(repoComp)
+
+    if request.method == "POST":
+        company = serviceComp.getOne(idOfCurrentUser)
+        accordYear = request.form["AccordYear"]
+        noHours = request.form["InternshipLenghtDays"]
+        accordSignDate = request.form["AccordSignDate"]
+
+        companyName = company.get_name()
+        companyCity = company.get_city()
+        companyStreet = company.get_street()
+        companyStreetNo = company.get_streetNo()
+        companyPhone = company.get_phone()
+        fax = company.get_fax()
+        companyFiscalCode = company.get_fiscalCode()
+        companyBank = company.get_bank()
+        companyIBAN = company.get_iban()
+        companyLegalRepresentative = company.get_legalRepresentative()
+
+        nrOfStudents = request.form["TotalNoStudents"]
+        noStudents1 = request.form["NoStudents1"]
+        noStudents2 = request.form["NoStudents2"]
+        specialization1 = request.form["Specialization1"]
+        specialization2 = request.form["Specialization2"]
+        faculty2 = request.form["Faculty2"]
+        faculty1 = request.form["Faculty1"]
+
+        create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, companyStreet, companyStreetNo,
+                     companyPhone, fax, companyFiscalCode, companyBank, companyIBAN, companyLegalRepresentative,
+                     nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2)
+
+        return render_template("firmaResponsabil/acordResponsabilFirma.html")
+    else:
+        try:
+            company = serviceComp.getOne(idOfCurrentUser)
+        except:
+            flash("Trebuie sa introduceti mai intai datele firmei.")
+            return redirect(url_for("responsabil_firma.home"))
+        return render_template("firmaResponsabil/acordResponsabilFirma.html")
+
+
+@responsabil_firma.route('/responsabil_firma_date_firma', methods=["GET", "POST"])
+def date_firma():
+    if verify_role(1) == 0:
+        return render_template("home.html")
+    if request.method == "POST":
+        repoUser = UserRepository()
+        serviceUser = UserService(repoUser)
+        idOfCurrentUser = serviceUser.getOneByUsername(session["username"]).get_id()
+
+        companyName = request.form["CompanyName"]
+        companyCity = request.form["CompanyCity"]
+        companyStreet = request.form["CompanyStreet"]
+        companyStreetNo = request.form["CompanyStreetNo"]
+        companyPhone = request.form["CompanyPhone"]
+        companyFax = request.form["CompanyFax"]
+        companyFiscalCode = request.form["CompanyFiscalCode"]
+        companyBank = request.form["CompanyBank"]
+        companyIBAN = request.form["CompanyIBAN"]
+        companyLegalRepresentative = request.form["CompanyLegalRepresentative"]
+
+        from domain.company_info import CompanyInfo
+        companyInfo = CompanyInfo(idOfCurrentUser, companyLegalRepresentative, companyName, companyCity, companyStreet,
+                                  companyStreetNo, companyPhone, companyFax
+                                  , companyFiscalCode, companyBank, companyIBAN)
+        repoComp = CompanyInfoRepository()
+        serviceComp = CompanyInfoService(repoComp)
+        try:
+            serviceComp.add(companyInfo)
+        except:  # nu s-a putut adauga, deci deja exista, caz in care il updatam.
+            serviceComp.update(companyInfo)
+
+        flash("Ati completat cu succes datele firmei!")
+        return redirect(url_for("responsabil_firma.home"))
+    else:
+        return render_template("firmaResponsabil/dateGeneraleFirma.html")
+
 
 @responsabil_firma.route('/responsabil_firma', methods=["GET"])
 def home():
