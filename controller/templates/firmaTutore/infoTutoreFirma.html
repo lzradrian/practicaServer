@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Documente Practica</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div class="documentDiv" style="height: 50%; width: 20%;top: 25%; left: 40%">
+		<h2>Date Generale</h2><br>
+		<form action="{{ url_for('tutore_firma.info') }}" method="post" style="width: 100%">
+			<label for="name">Nume:</label><br>
+			<input type="text" id="name" name="name"><br><br><br>
+            <label for="email">Email:</label><br>
+			<input type="text" id="email" name="email"><br><br><br>
+            <label for="phone">Numar telefon:</label><br>
+			<input type="text" id="phone" name="phone"><br><br><br>
+            <label for="fax">Fax:</label><br>
+			<input type="text" id="fax" name="fax"><br><br><br>
+            <label for="function">Functie:</label><br>
+			<input type="text" id="function" name="function"><br><br><br>
+			<input type="submit" value="Completeaza">
+		</form>
+	</div>
+</body>
+</html>

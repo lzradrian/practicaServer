@@ -122,9 +122,7 @@ def conventie():
     else:
         return render_template("firmaResponsabil/conventieResponsabilFirma.html")
 
-
-@responsabil_firma.route('/management', methods=["GET", "POST"])
-def management():
+def get_associated_students(responsible_id):
     from service.utility import get_internship_service, get_student_internship_service, get_user_service
 
     internship_service = get_internship_service()
@@ -138,29 +136,39 @@ def management():
         students.append(user_service.getOne(si.student_id))
     headings = (("Nume Student",))
     student_names = tuple([(student.username,) for student in students])
+    return headings, student_names
+
+@responsabil_firma.route('/management', methods=["GET", "POST"])
+def management():
+    headings, student_names = get_associated_students(session["id"])
     return render_template("firmaResponsabil/managementResponsabilFirma.html", headings=headings, data=student_names)
 
 @responsabil_firma.route('/add_student', methods=["GET", "POST"])
 def add_student():
     if request.method == "POST":
         from service.utility import get_internship_service, get_student_internship_service,\
-            get_user_service, get_student_info_service
+            get_user_service, get_student_info_service, get_tutor_info_service
         from domain.student_internship import StudentInternship
 
+        headings, student_names = get_associated_students(session["id"])
+
         name = request.form["name"]
+        tutor_name = request.form["tutor_name"]
         year = request.form["year"]
         group = request.form["group"]
 
         internship_service = get_internship_service()
         student_internship_service = get_student_internship_service()
         student_info_service = get_student_info_service()
+        tutor_info_service = get_tutor_info_service()
 
         try:
+            tutor_info = tutor_info_service.get_by_name(tutor_name)
             student_info = student_info_service.get_by_identifiers(name, year, group)
             internship = internship_service.get_by_representative_id(session["id"])
-            student_internship_service.add(StudentInternship(None, internship.id, student_info.student_id))
+            student_internship_service.add(StudentInternship(None, internship.id, student_info.id, tutor_info.id))
         except ValueError:
-            return render_template("firmaResponsabil/managementResponsabilFirma.html", error="No student with given identifiers could be found!")
+            return render_template("firmaResponsabil/managementResponsabilFirma.html", headings=headings, student_names=student_names, error="No student with given identifiers could be found!")
     return render_template("firmaResponsabil/homeResponsabilFirma.html")
 
 

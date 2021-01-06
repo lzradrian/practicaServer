@@ -11,7 +11,12 @@ class StudentInternshipRepository:
 
     def get_by_internship_id(self, internship_id):
         from domain.student_internship import StudentInternship
-        student_internship = StudentInternship.query.filter_by(internship_id=internship_id)
+        student_internship = StudentInternship.query.filter_by(internship_id=internship_id).first()
+        return student_internship
+
+    def get_by_student_id(self, student_id):
+        from domain.student_internship import StudentInternship
+        student_internship = StudentInternship.query.filter_by(student_id=student_id).first()
         return student_internship
 
     def add(self, student_internship):

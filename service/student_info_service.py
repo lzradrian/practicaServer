@@ -18,20 +18,13 @@ class StudentInfoService:
             raise ValueError("StudentInfo with given id does not exist.")
         return student_info
 
-    '''
-    #vezi domain: 1-1 relatie intre info si student
-    def get_by_student_id(self, student_id):
-        student_info = self.__repo.get_by_student_id(student_id)
-        if student_info is None:
-            raise ValueError("User with given username does not exist.")
-        return student_info
 
     def get_by_identifiers(self, name, year, group):
         student_info = self.__repo.get_by_identifiers(name, year, group)
         if student_info is None:
             raise ValueError("StudentInfo with given student_id does not exist.")
         return student_info
-    '''
+
     def remove(self, id):
         student_info = self.__repo.getOne(id)
         if student_info is None:

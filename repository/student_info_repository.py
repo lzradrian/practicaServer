@@ -9,12 +9,6 @@ class StudentInfoRepository:
         student_info = StudentInfo.query.get(id)
         return student_info
 
-    '''
-    def get_by_student_id(self, student_id):
-        from domain.student_info import StudentInfo
-        student_info = StudentInfo.query.filter_by(student_id=student_id).first()
-        return student_info
-    '''
 
     def get_by_identifiers(self, name, year, group):
         from domain.student_info import StudentInfo

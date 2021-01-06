@@ -26,15 +26,7 @@
         <input class="documentButton" name="tutoreFirmaAcordButton" type="submit" value="Completeaza">
     </form>
 	<h1>Management practica {{ year }}</h1>
-	<div class="documentDiv" style="height: 20%;top: 40%; left: 35%">
-		<h2>Conventie de Practica</h2>
-
-		<form  action="{{ url_for('responsabil_firma.conventie') }}" class="documentButtonForm" style="height: 30%">
-			<input class="documentButton" type="submit" name="tutoreFirmaConventieButton" value="Completeaza">
-		</form>
-	</div>
 	<div class="managementDiv" style="height: 20%;top: 40%; left: 35%">
-		<h2>Management Practica</h2>
 		{% if active == False %}
 			<form  action="{{ url_for('responsabil_firma.start_internship') }}" class="documentButtonForm" style="height: 30%">
 				<input class="documentButton" type="submit" name="tutoreFirmaConventieButton" value="Completeaza">

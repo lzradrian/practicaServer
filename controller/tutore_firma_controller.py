@@ -60,6 +60,25 @@ def conventie():
         return render_template("firmaTutore/conventieTutoreFirma.html")
 
 
+@tutore_firma.route('/info', methods=["POST", "GET"])
+def info():
+    if request.method == "POST":
+        from service.utility import get_tutor_info_service
+        from domain.tutor_info import TutorInfo
+
+        service = get_tutor_info_service()
+
+        id = session["id"]
+
+        name = request.form["name"]
+        email = request.form["email"]
+        phone = request.form["phone"]
+        fax = request.form["fax"]
+        function = request.form["function"]
+        service.add(TutorInfo(id, name, email, phone, fax, function))
+    return render_template("firmaTutore/infoTutoreFirma.html")
+
+
 @tutore_firma.route('/tutore_firma', methods=["GET"])
 def home():
     if verify_role(2) == 0:

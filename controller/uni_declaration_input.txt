@@ -1,8 +1,0 @@
-StudentName xvxcv
-StudentGroup xcv
-StudentSpecialization xcv
-StudentYear 1
-DeclarationInternshipPeriod vbnvbn
-DeclarationSignDate 2021-01-03
-HomeAddress vbnvn
-CoordonatorName vbnvbn

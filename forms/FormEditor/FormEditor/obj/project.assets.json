@@ -6512,19 +6512,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\adi98\\.nuget\\packages\\": {}
+    "C:\\Users\\joseph\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Projects\\PycharmProjects\\practicaServer\\forms\\FormEditor\\FormEditor\\FormEditor.csproj",
+      "projectUniqueName": "C:\\Data\\Projects\\Practica\\practicaServer\\forms\\FormEditor\\FormEditor\\FormEditor.csproj",
       "projectName": "FormEditor",
-      "projectPath": "E:\\Projects\\PycharmProjects\\practicaServer\\forms\\FormEditor\\FormEditor\\FormEditor.csproj",
-      "packagesPath": "C:\\Users\\adi98\\.nuget\\packages\\",
-      "outputPath": "E:\\Projects\\PycharmProjects\\practicaServer\\forms\\FormEditor\\FormEditor\\obj\\",
+      "projectPath": "C:\\Data\\Projects\\Practica\\practicaServer\\forms\\FormEditor\\FormEditor\\FormEditor.csproj",
+      "packagesPath": "C:\\Users\\joseph\\.nuget\\packages\\",
+      "outputPath": "C:\\Data\\Projects\\Practica\\practicaServer\\forms\\FormEditor\\FormEditor\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\adi98\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\joseph\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -6572,7 +6572,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
       }
     }
   }

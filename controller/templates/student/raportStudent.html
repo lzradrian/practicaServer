@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table>
+        <tr>
+            {% for header in headings %}
+            <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in data %}
+            <tr>
+            {% for cell in row %}
+                <td>{{ cell }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <form action="{{ url_for('student.raport') }}" method="post" style="width: 100%">
+        <label for="activity_date">Perioada activitate:</label><br>
+        <input type="text" id="activity_date" name="activity_date"><br><br>
+        <label for="no_hours">Nr. ore:</label><br>
+        <input type="text" id="no_hours" name="no_hours"><br><br>
+        <label for="description">Descriere activitate:</label><br>
+        <input type="text" id="description" name="description"><br><br>
+        <input type="submit" value="Adauga">
+    </form>
+    <form action="{{ url_for('student.download') }}" method="get">
+            <input type="submit" value="Genereaza raport">
+        </form>
+</body>
+</html>

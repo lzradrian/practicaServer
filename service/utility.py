@@ -12,6 +12,13 @@ def get_student_info_service():
     return StudentInfoService(repo)
 
 
+def get_tutor_info_service():
+    from repository.tutor_info_repository import TutorInfoRepository
+    from service.tutor_info_service import TutorInfoService
+    repo = TutorInfoRepository()
+    return TutorInfoService(repo)
+
+
 def get_internship_service():
     from repository.internship_repository import InternshipRepository
     from service.internship_service import InternshipService
@@ -24,3 +31,10 @@ def get_student_internship_service():
     from service.student_internship_serivce import StudentInternshipService
     repo = StudentInternshipRepository()
     return StudentInternshipService(repo)
+
+
+def get_student_activity_service():
+    from repository.student_activity_repository import StudentActivityRepository
+    from service.student_activity_service import StudentActivityService
+    repo = StudentActivityRepository()
+    return StudentActivityService(repo)

@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, flash, render_template, session, request, url_for
+from flask import Blueprint, redirect, flash, render_template, session, request, url_for, send_from_directory
 
 from controller.helpers.authorize import verify_role, auth_required_with_role
 from controller.helpers.pdfTools import create_pdf_from_dic
@@ -192,6 +192,7 @@ def student_info():
         student_id = session["id"]
         name = request.form["name"]
         pnc = request.form["pnc"]
+        faculty = request.form["faculty"]
         student_function = request.form["student_function"]
         year = request.form["year"]
         group = request.form["group"]
@@ -205,7 +206,7 @@ def student_info():
         repo = StudentInfoRepository()
         service = StudentInfoService(repo)
         studentinfo = StudentInfo(student_id, name, pnc, student_function,
-                               year, group, specialization, study_line)
+                               faculty, year, group, specialization, study_line)
         try:
             service.add(studentinfo)
             flash("Ati completat cu succes datele!")
@@ -215,6 +216,60 @@ def student_info():
         return redirect(url_for("student.home"))
     else:
         return render_template("student/infoStudent.html")
+
+
+@student.route('/raport', methods=["POST", "GET"])
+def raport():
+    from service.utility import get_student_activity_service
+    from domain.student_activity import StudentActivity
+
+    service = get_student_activity_service()
+    id = session["id"]
+
+    if request.method == "POST":
+        period = request.form["activity_date"]
+        no_hours = request.form["no_hours"]
+        description = request.form["description"]
+        service.add(StudentActivity(0, id, period, int(no_hours), description))
+
+        return redirect(url_for("student.raport"))
+
+    headings = (("Perioada activitate", "Nr. ore", "Descriere activitate"))
+    activities = service.get_all_with_student_id(id)
+    activities = tuple([(activity.period, activity.no_hours, activity.description) for activity in activities])
+
+    return render_template("student/raportStudent.html", headings=headings, data=activities)
+
+
+@student.route('/download', methods=["GET", "POST"])
+def download():
+    from datetime import date
+    from service.utility import get_student_info_service
+    from service.utility import get_student_internship_service
+    from service.utility import get_internship_service
+    from service.utility import get_tutor_info_service
+    from domain.raport_file import fields
+    from controller.form_utility import write_to_file, generate_pdf
+    import os
+
+    id = session["id"]
+    date = str(date.today())
+
+    student_info_service = get_student_info_service()
+    student_internship_service = get_student_internship_service()
+    internship_service = get_internship_service()
+    tutor_info_service = get_tutor_info_service()
+
+    student_info = student_info_service.getOne(id)
+    student_internship = student_internship_service.get_by_student_id(id)
+    internship = internship_service.getOne(student_internship.internship_id)
+    tutor = tutor_info_service.getOne(student_internship.tutor_id)
+    params = [student_info.name, student_info.faculty, student_info.specialization,
+              student_info.year, tutor.name, str(internship.start_date), str(internship.end_date), date]
+    pair_input = dict(zip(fields.keys(), params))
+    write_to_file("raport_input.txt", pair_input)
+    generate_pdf("RaportActivitatePractica.pdf", "raport_input.txt", "RaportActivitate-" + student_info.name + ".pdf")
+    return send_from_directory(os.path.dirname(os.path.realpath(__file__)), "RaportActivitate-" + student_info.name + ".pdf")
 
 
 # @auth_required_with_role(0)

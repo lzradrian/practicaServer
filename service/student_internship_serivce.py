@@ -24,6 +24,12 @@ class StudentInternshipService:
             raise ValueError("User with given username does not exist.")
         return student_internship
 
+    def get_by_student_id(self, student_id):
+        student_internship = self.__repo.get_by_student_id(student_id)
+        if student_internship is None:
+            raise ValueError("User with given username does not exist.")
+        return student_internship
+
     def remove(self, id):
         student_internship = self.__repo.get_one(id)
         if student_internship is None:
