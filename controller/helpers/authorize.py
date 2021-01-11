@@ -10,7 +10,25 @@ from service.user_service import UserService
 userRepo = UserRepository()
 userService = UserService(userRepo)
 
+def get_home_route():
+    if "role" not in session:
+        print("role not in session. redirecting to login")
+        return None
 
+    if session["role"] == 0:
+        return "student.home"
+    elif session["role"] == 1:
+        return "responsabil_firma.home"
+    elif session["role"] == 2:
+        return "tutore_firma.home"
+    elif session["role"] == 3:
+        return "secretara.home"
+    elif session["role"] == 5: 
+        return "cadru_didactic_supervizor.home"
+    elif session["role"] == 6:
+        return "responsabil_facultate.home"
+    elif session["role"] == 7:
+        return "decan.home"
 def verify_role(role):
     '''
     :param role: int
