@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, flash, render_template, session, request, url_for
 
-from controller.helpers.authorize import verify_role
+from controller.helpers.authorize import verify_role, get_home_route
 from repository.conventie_repository import ConventieRepository
 from repository.acord_repository import AcordRepository
 from repository.company_info_repository import CompanyInfoRepository
@@ -264,5 +264,5 @@ def date_firma():
 @responsabil_firma.route('/responsabil_firma', methods=["GET"])
 def home():
     if verify_role(1) == 0:
-        return render_template("home.html")
+        return  redirect(url_for(get_home_route()))
     return render_template("firmaResponsabil/homeResponsabilFirma.html")

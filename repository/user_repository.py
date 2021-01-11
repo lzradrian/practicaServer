@@ -6,7 +6,7 @@ class UserRepository:
 
     def getOne(self, id):
         from domain.user import User
-        user = User.query.get(id)
+        user = User.query.filter_by(id=id).first()
         return user
 
     def getOneByUsername(self, id):

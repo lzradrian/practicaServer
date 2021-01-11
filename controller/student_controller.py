@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, flash, render_template, session, request, url_for
 
-from controller.helpers.authorize import verify_role, auth_required_with_role
+from controller.helpers.authorize import verify_role, auth_required_with_role, get_home_route
 from controller.helpers.pdfTools import create_pdf_from_dic
 from repository.conventie_repository import ConventieRepository
 from service.conventie_service import ConventieService
@@ -62,34 +62,36 @@ def conventie():
         from service.student_info_service import StudentInfoService
         from domain.student_info import StudentInfo
         from domain.conventie_student_file import fields
-        repo = StudentInfoRepository()
-        service = StudentInfoService(repo)
+        from controller.user_controller import userService
 
-        info = service.getOne(session["id"])
 
-        name = info.name
+        info = userService.getOne(session["id"])
+
+        name = info.username
         cnp = info.pnc
         group = info.group
         specialty = info.specialization
         year = info.year
         function = info.student_function
         line = info.study_line
-
-        country = request.form["nationality"]
-        city = request.form["city"]
-        street = request.form["street"]
-        number = request.form["number"]
-        apartment = request.form["apartment"]
-        county = request.form["county"]
-        phone = request.form["phone"]
-        email = request.form["email"]
-        series = request.form["series"]
-        id = request.form["id"]
-        birthdate = request.form["birthdate"]
-        birthcity = request.form["birthlocation"]
-        date = request.form["signdate"]
-        signature = request.form["signature"] #nefolosit ulterior
-
+        try:
+            country = request.form["nationality"]
+            city = request.form["city"]
+            street = request.form["street"]
+            number = request.form["number"]
+            apartment = request.form["apartment"]
+            county = request.form["county"]
+            phone = request.form["phone"]
+            email = request.form["email"]
+            series = request.form["series"]
+            id = request.form["id"]
+            birthdate = request.form["birthdate"]
+            birthcity = request.form["birthlocation"]
+            date = request.form["signdate"]
+            signature = request.form["signature"] #nefolosit ulterior
+        except:
+            flash("Cel putin un camp nu este completat!")
+            return redirect(url_for("student_conventie.home"))
         '''
         #varianta2
         #params = [info.name, info.pnc, info.group, info.specialization, info.year,
@@ -221,5 +223,5 @@ def student_info():
 @student.route('/student', methods=["GET"])
 def home():
     if verify_role(0) == 0:
-        return render_template("home.html")
+        return  redirect(url_for(get_home_route()))
     return render_template("student/homeStudent.html")
