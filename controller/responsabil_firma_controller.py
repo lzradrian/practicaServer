@@ -122,7 +122,8 @@ def conventie():
     else:
         return render_template("firmaResponsabil/conventieResponsabilFirma.html")
 
-def get_associated_students(responsible_id):
+
+def get_associated_students():
     from service.utility import get_internship_service, get_student_internship_service, get_user_service
 
     internship_service = get_internship_service()
@@ -138,10 +139,12 @@ def get_associated_students(responsible_id):
     student_names = tuple([(student.username,) for student in students])
     return headings, student_names
 
+
 @responsabil_firma.route('/management', methods=["GET", "POST"])
 def management():
-    headings, student_names = get_associated_students(session["id"])
+    headings, student_names = get_associated_students()
     return render_template("firmaResponsabil/managementResponsabilFirma.html", headings=headings, data=student_names)
+
 
 @responsabil_firma.route('/add_student', methods=["GET", "POST"])
 def add_student():

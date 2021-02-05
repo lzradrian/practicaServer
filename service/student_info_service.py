@@ -18,7 +18,6 @@ class StudentInfoService:
             raise ValueError("StudentInfo with given id does not exist.")
         return student_info
 
-
     def get_by_identifiers(self, name, year, group):
         student_info = self.__repo.get_by_identifiers(name, year, group)
         if student_info is None:

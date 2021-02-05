@@ -4,7 +4,7 @@ from controller import db
 class StudentActivity(db.Model):
     __tablename__ = 'StudentActivities'
     id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
-    student_id = db.Column("student_id", db.Integer, db.ForeignKey('Users.id'))
+    student_id = db.Column("student_id", db.Integer)
     period = db.Column("period", db.String)
     no_hours = db.Column("no_hours", db.Integer)
     description = db.Column("description", db.Integer)
