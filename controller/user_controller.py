@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, flash, render_template, session, request, url_for, current_app
-from flask_principal import identity_changed, Identity, AnonymousIdentity
+# from flask_principal import identity_changed, Identity, AnonymousIdentity
 
 from repository.user_repository import UserRepository
 from service.user_service import UserService
