@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, flash, render_template, session, request, url_for, current_app
-# from flask_principal import identity_changed, Identity, AnonymousIdentity
-
+from flask_principal import identity_changed, Identity, AnonymousIdentity
+from controller.helpers.authorize import verify_role, auth_required_with_role, get_home_route
 from repository.user_repository import UserRepository
 from service.user_service import UserService
 
@@ -16,19 +16,24 @@ def home():
 
 @auth.route('/login', methods=["POST", "GET"])
 def login():
+    if id in session and session["id"]:
+        return redirect(url_for(get_home_route()))
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
 
-        session.permanent = True
-        session["username"] = username
-        session["id"] = userService.getOneByUsername(username).get_id()
 
+        
         try:
             found_user = userService.getOneByUsername(username)
         except ValueError as err:
             flash("Incorect credentials!")
             return render_template("user/login.html")
+
+        session.permanent = True
+        session["username"] = username
+        session["id"] = userService.getOneByUsername(username).get_id()
 
         if found_user and found_user.get_password() == password:
             if (found_user.get_role() == 0):

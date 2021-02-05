@@ -66,5 +66,5 @@ def conventie():
 @cadru_didactic_supervizor.route('/cadru_didactic_supervizor', methods=["GET"])
 def home():
     if verify_role(5) == 0:
-        return render_template("home.html")
+        return  redirect(url_for(get_home_route()))
     return render_template("cadruDidacticSupervizor/homeCadruDidacticSupervizor.html")

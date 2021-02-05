@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, flash, render_template, session, request, url_for
 
-from controller.helpers.authorize import verify_role
+from controller.helpers.authorize import verify_role, get_home_route
 from repository.conventie_repository import ConventieRepository
 from repository.acord_repository import AcordRepository
 from repository.company_info_repository import CompanyInfoRepository
