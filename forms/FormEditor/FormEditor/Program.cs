@@ -10,9 +10,9 @@ namespace FormEditor
             String inputPdf = args[0];
             String inputTxt = args[1];
             String outputPdf = args[2];
-            FormEditorService.FillOutPDF("../../../../../"+inputPdf,
-                                         "../../../../../"+outputPdf,
-                                         ReadPDFFieldsFromFile("../../../../../"+inputTxt));
+            FormEditorService.FillOutPDF(inputPdf,
+                                         outputPdf,
+                                         ReadPDFFieldsFromFile(inputTxt));
         }
 
         static Dictionary<string, string> ReadPDFFieldsFromFile(string filepath)

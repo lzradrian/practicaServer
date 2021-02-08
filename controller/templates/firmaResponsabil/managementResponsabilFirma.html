@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div>
+        <h2>Adauga studenti</h2>
+        {% if error is defined %}
+            <p>{{ error }}</p>
+        {% endif %}
+        <form action="{{ url_for('responsabil_firma.add_student') }}" method="post" style="width: 100%">
+			<label for="name">Nume student:</label><br>
+			<input type="text" id="name" name="name"><br><br>
+            <label for="tutor_name">Nume tutore:</label><br>
+			<input type="text" id="tutor_name" name="tutor_name"><br><br>
+            <label for="supervisor_name">Nume cadru didactic supervizor:</label><br>
+			<input type="text" id="supervisor_name" name="supervisor_name"><br><br>
+            <label for="year">An:</label><br>
+			<input type="text" id="year" name="year"><br><br>
+            <label for="group">Grupa:</label><br>
+			<input type="text" id="group" name="group"><br><br>
+			<input type="submit" value="Adauga">
+		</form>
+    </div>
+    <table>
+        <tr>
+            {% for header in headings %}
+            <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in data %}
+            <tr>
+            {% for cell in row %}
+                <td>{{ cell }}</td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

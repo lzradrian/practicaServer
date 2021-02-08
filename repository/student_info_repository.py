@@ -9,12 +9,11 @@ class StudentInfoRepository:
         student_info = StudentInfo.query.get(id)
         return student_info
 
-    '''
-    def get_by_student_id(self, student_id):
+
+    def get_by_identifiers(self, name, year, group):
         from domain.student_info import StudentInfo
-        student_info = StudentInfo.query.filter_by(student_id=student_id).first()
+        student_info = StudentInfo.query.filter_by(name=name).filter_by(year=int(year)).filter_by(group=group).first()
         return student_info
-    '''
 
     def add(self, student_info):
         from controller import db

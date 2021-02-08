@@ -25,6 +25,18 @@
     <form action="{{ url_for('responsabil_firma.acord') }}" class="documentButtonForm" style="height: 30%">
         <input class="documentButton" name="tutoreFirmaAcordButton" type="submit" value="Completeaza">
     </form>
+	<h1>Management practica {{ year }}</h1>
+	<div class="managementDiv" style="height: 20%;top: 40%; left: 35%">
+		{% if active == False %}
+			<form  action="{{ url_for('responsabil_firma.start_internship') }}" class="documentButtonForm" style="height: 30%">
+				<input class="documentButton" type="submit" name="tutoreFirmaConventieButton" value="Completeaza">
+			</form>
+		{% else %}
+			<form  action="{{ url_for('responsabil_firma.management') }}" class="documentButtonForm" style="height: 30%">
+				<input class="documentButton" type="submit" name="tutoreFirmaConventieButton" value="Vizualizare studenti">
+			</form>
+		{% endif %}
+	</div>
     <a href="{{url_for('auth.logout')}}"> Logout </a>
 </div>
 </body>

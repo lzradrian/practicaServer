@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, flash, render_template, session, request, url_for
+from flask import Blueprint, redirect, flash, render_template, session, request, url_for, send_from_directory
 
 from controller.helpers.authorize import verify_role, auth_required_with_role, get_home_route
 from controller.helpers.pdfTools import create_pdf_from_dic
@@ -131,42 +131,60 @@ def student_company_declaration():
         from repository.student_info_repository import StudentInfoRepository
         from service.student_info_service import StudentInfoService
         from domain.student_info import StudentInfo
-        from datetime import date
+        from datetime import date, datetime
         from domain.declaratie_firma_file import fields
-        from controller.form_utility import write_to_file, generate_pdf
         from controller.helpers.pdfTools import create_pdf_from_dic
+        from service.utility import get_declaratie_firma_service
+        from domain.declaratie_firma import DeclaratieFirma
 
         repo = StudentInfoRepository()
         service = StudentInfoService(repo)
+        declaratie_service = get_declaratie_firma_service()
 
         info = service.getOne(session["id"])
-
         date = str(date.today())
         params = [info.name, info.group, info.specialization, info.year,
                   request.form["interval"], date, request.form["address"],
                   request.form["firm"], request.form["coordinator"]]
         pair_input = dict(zip(fields.keys(), params))
-        create_pdf_from_dic("DeclaratieActivitateFirma.pdf", "outputFirma.pdf", pair_input)
-        '''
-        write_to_file("company_declaration_input.txt", pair_input)
-        generate_pdf("../forms/DeclaratieActivitateFirma.pdf",
-                     "DeclaratieActivitateFirma-" + info.name,
-                     "company_declaration_input.txt")
-        '''
+        content = create_pdf_from_dic("DeclaratieActivitateFirma.pdf", "DeclaratieActivitateFirma-" + info.name + ".pdf", pair_input)
+        try:
+            declaratie_found = declaratie_service.get_with_student_id(session["id"])
+            declaratie_service.update(DeclaratieFirma(None, session["id"], datetime.now(), content, False))
+        except ValueError:
+            declaratie_service.add(DeclaratieFirma(None, session["id"], datetime.now(), content, False))
+
         return redirect(url_for("student.home"))
     return render_template("student/declaratieFirmaStudent.html")
 
 
 @student.route("/student_uni_declaration", methods=["POST", "GET"])
 def student_uni_declaration():
+    from service.utility import get_declaratie_ubb_service
+    from controller.helpers.pdfTools import get_fields_from_pdf
+
+    declaratie_service = get_declaratie_ubb_service()
+    already_completed = False
+    try:
+        declaratie_found = declaratie_service.get_with_student_id(session["id"])
+        already_completed = True
+    except ValueError:
+        pass
+
+    if already_completed:
+        declaratie = declaratie_service.get_with_student_id(session["id"])
+        fields = get_fields_from_pdf(declaratie.content)
+
     if request.method == "POST":
         from repository.student_info_repository import StudentInfoRepository
         from service.student_info_service import StudentInfoService
         from domain.student_info import StudentInfo
         from datetime import date
         from domain.declaratie_ubb_file import fields
-        from controller.form_utility import write_to_file, generate_pdf
         from controller.helpers.pdfTools import create_pdf_from_dic
+        from domain.declaratie_ubb import DeclaratieUBB
+        from datetime import datetime
+        import os
 
         repo = StudentInfoRepository()
         service = StudentInfoService(repo)
@@ -177,37 +195,40 @@ def student_uni_declaration():
                   request.form["interval"], date, request.form["address"],
                   request.form["coordinator"]]
         pair_input = dict(zip(fields.keys(), params))
-        create_pdf_from_dic("DeclaratieActivitateUBB.pdf","outputUBB.pdf",pair_input)
-        '''
-                write_to_file("company_declaration_input.txt", pair_input)
-                generate_pdf("../forms/DeclaratieActivitateFirma.pdf",
-                             "DeclaratieActivitateFirma-" + info.name,
-                             "company_declaration_input.txt")
-        '''
+        content = create_pdf_from_dic("DeclaratieActivitateUBB.pdf","DeclaratieActivitateUBB-" + info.name + ".pdf", pair_input)
+
+        if already_completed:
+            declaratie_service.update(DeclaratieUBB(None, session["id"], datetime.now(), content, False))
+        else:
+            declaratie_service.add(DeclaratieUBB(None, session["id"], datetime.now(), content, False))
+
         return redirect(url_for("student.home"))
     return render_template("student/declaratieFacultateStudent.html")
 
 
 @student.route("/student_info", methods=["POST", "GET"])
 def student_info():
+    from repository.student_info_repository import StudentInfoRepository
+    from service.student_info_service import StudentInfoService
+    from domain.student_info import StudentInfo
+
+    repo = StudentInfoRepository()
+    service = StudentInfoService(repo)
+
+    student_id = session["id"]
     if request.method == "POST":
-        student_id = session["id"]
         name = request.form["name"]
         pnc = request.form["pnc"]
+        faculty = request.form["faculty"]
         student_function = request.form["student_function"]
         year = request.form["year"]
         group = request.form["group"]
         specialization = request.form["specialization"]
         study_line = request.form["specialization"]
 
-        from repository.student_info_repository import StudentInfoRepository
-        from service.student_info_service import StudentInfoService
-        from domain.student_info import StudentInfo
-
-        repo = StudentInfoRepository()
-        service = StudentInfoService(repo)
         studentinfo = StudentInfo(student_id, name, pnc, student_function,
-                               year, group, specialization, study_line)
+                               faculty, year, group, specialization, study_line)
+
         try:
             service.add(studentinfo)
             flash("Ati completat cu succes datele!")
@@ -216,7 +237,84 @@ def student_info():
             flash("Ati updatat cu succes datele!")
         return redirect(url_for("student.home"))
     else:
+        try:
+            info = service.getOne(student_id)
+        except Exception as e:
+            pass
         return render_template("student/infoStudent.html")
+
+
+@student.route('/raport', methods=["POST", "GET"])
+def raport():
+    from service.utility import get_student_activity_service
+    from domain.student_activity import StudentActivity
+
+    service = get_student_activity_service()
+    id = session["id"]
+
+    if request.method == "POST":
+        period = request.form["activity_date"]
+        no_hours = request.form["no_hours"]
+        description = request.form["description"]
+        service.add(StudentActivity(None, id, period, int(no_hours), description))
+
+        return redirect(url_for("student.raport"))
+
+    headings = (("Perioada activitate", "Nr. ore", "Descriere activitate"))
+    activities = service.get_all_with_student_id(id)
+    activities = tuple([(activity.period, activity.no_hours, activity.description) for activity in activities])
+
+    return render_template("student/raportStudent.html", headings=headings, data=activities)
+
+
+@student.route('/download', methods=["GET", "POST"])
+def download():
+    try:
+        from service.utility import get_student_info_service, get_student_internship_service, get_internship_service,\
+            get_tutor_info_service, get_student_activity_service
+        import os
+
+        id = session["id"]
+
+        student_info_service = get_student_info_service()
+        student_internship_service = get_student_internship_service()
+        internship_service = get_internship_service()
+        tutor_info_service = get_tutor_info_service()
+        student_activity_service = get_student_activity_service()
+
+        student_info = student_info_service.getOne(id)
+        student_internship = student_internship_service.get_by_student_id(id)
+        internship = internship_service.getOne(student_internship.internship_id)
+        tutor = tutor_info_service.getOne(student_internship.tutor_id)
+        activities = student_activity_service.get_all_with_student_id(id)
+
+        from form_utility import create_activity_html
+        parameters = {}
+        parameters["name"] = student_info.name
+        parameters["faculty"] = student_info.faculty
+        parameters["specialization"] = student_info.specialization
+        parameters["year"] = str(student_info.year)
+        parameters["tutor_name"] = tutor.name
+        parameters["start_date"] = str(internship.start_date)
+        parameters["end_date"] = str(internship.end_date)
+
+        activity_list = []
+        for activity in activities:
+            activity_list.append((activity.period + "/" + activity.no_hours, activity.description))
+        parameters["activities"] = activity_list
+        create_activity_html(parameters, "Activity_" + student_info.name + ".html")
+
+        import pdfkit
+        import time
+
+        pdfkit.from_file("Activity_" + student_info.name + ".html", "Activity_" + student_info.name + ".pdf")
+
+        time.sleep(1)
+
+        return send_from_directory(os.path.dirname(os.path.realpath(__file__)), "Activity_" + student_info.name + ".pdf")
+    except ValueError as e:
+        flash("Nu s-a putut genera raportul")
+    return render_template("student/raportStudent.html")
 
 
 # @auth_required_with_role(0)

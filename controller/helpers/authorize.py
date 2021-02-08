@@ -2,7 +2,7 @@ from functools import wraps, update_wrapper
 
 import flask
 from flask import url_for, request, redirect, session, render_template, g
-from flask_principal import Permission, RoleNeed
+# from flask_principal import Permission, RoleNeed
 
 from repository.user_repository import UserRepository
 from service.user_service import UserService

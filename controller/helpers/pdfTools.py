@@ -72,18 +72,39 @@ def create_pdf_from_dic(fisier_input_pdf, fisier_output_pdf,data):
     # dir_location = ..practicaServer
 
     # write content from conventie to file
-    numeFisierTemporar = "temporar_file.txt"
-    input_txt_location = dir_location + '\\forms\\' + numeFisierTemporar
+    #input_txt_location = dir_location + '\\forms\\' + numeFisierTemporar
 
-    with open(input_txt_location, "w+") as f:
-        for k, v in data.items():
-            f.write(str(k) + " " + str(v) + "\n")
+
 
     dir_location = dir_location + "\\forms\\FormEditor\\FormEditor\\bin\\Debug\\netcoreapp3.1"
     os.chdir(dir_location)
 
+    numeFisierTemporar = "temporar_file.txt"
+    with open(numeFisierTemporar, "w+") as f:
+        for k, v in data.items():
+            f.write(str(k) + " " + str(v) + "\n")
+
     # generate pdf
     os.system('cmd /c "FormEditor ' + fisier_input_pdf + ' ' + numeFisierTemporar + ' ' + fisier_output_pdf)
 
+    content = open(fisier_output_pdf, 'rb').read()
     # delete used file
-    os.remove(input_txt_location)
+    os.remove(numeFisierTemporar)
+    os.remove(fisier_output_pdf)
+
+    return content
+
+
+def _get_fields_from_pdf(pdf_filepath):
+    import PyPDF2
+    f = PyPDF2.PdfFileReader(pdf_filepath)
+    return f.getFields()
+
+
+def get_fields_from_pdf(pdf_content):
+    import os
+    with open('temp_pdf.pdf', "wb") as f:
+        f.write(pdf_content)
+    fields = _get_fields_from_pdf('temp_pdf.pdf')
+    os.remove('temp_pdf.pdf')
+    return fields

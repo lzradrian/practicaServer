@@ -1,8 +1,8 @@
-StudentName xvxcv
-StudentGroup xcv
-StudentSpecialization xcv
+StudentName abc
+StudentGroup 913
+StudentSpecialization sdf
 StudentYear 1
-DeclarationInternshipPeriod vbnvbn
-DeclarationSignDate 2021-01-03
-HomeAddress vbnvn
-CoordonatorName vbnvbn
+DeclarationInternshipPeriod 10.10.2010-12.12.2010
+DeclarationSignDate 2021-02-07
+HomeAddress cvb
+CoordonatorName cvb
