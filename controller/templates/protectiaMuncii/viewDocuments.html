@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vizualizare declaratii</title>
+</head>
+<body>
+    <h1>Vizualizare declaratii</h1>
+    <table>
+        <tr>
+            {% for header in headings %}
+                <th>{{ header }}</th>
+            {% endfor %}
+        </tr>
+        {% for row in data %}
+            <tr>
+                {% for cell in row %}
+                    {% if loop.index == 7 %}
+                        <td><a href="/download/{{cell[0]}}&{{cell[1]}}">Descarca</a> </td>
+                    {% elif loop.index == 8 %}
+                        <td><button><a href="/validate/{{cell}}">OK</a></button></td>
+                    {% else %}
+                        <td>{{ cell }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
