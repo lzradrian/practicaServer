@@ -9,8 +9,10 @@ from controller import secretara_controller
 from controller import responsabil_firma_controller
 from controller import cadru_didactic_supervizor_controller
 from controller import decan_controller
+from controller import protectia_muncii_controller
 
 app = Flask(__name__)
+app.register_blueprint(protectia_muncii_controller.protectia_muncii)
 app.register_blueprint(user_controller.auth)
 app.register_blueprint(student_controller.student)
 app.register_blueprint(tutore_firma_controller.tutore_firma)

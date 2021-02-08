@@ -21,6 +21,13 @@
 		 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
 </head>
 <body>
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
+	{% for message in messages %}
+	{{ message }}
+	{% endfor %}
+	{% endif %}
+	{% endwith %}
 	<div class="sticky-top">
 		<a href="{{url_for('auth.logout')}}" class="btn btn-sm btn-danger"> Logout </a>
 	</div>

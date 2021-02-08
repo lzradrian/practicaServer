@@ -3,7 +3,7 @@ class StudentInternshipService:
         self.__repo = __repo
 
     def add(self, student_internship):
-        student_internship_found = self.__repo.get_one(student_internship.id)
+        student_internship_found = self.__repo.get_one(student_internship.student_id)
         if student_internship_found is not None:
             raise ValueError("Already exists a user with given id")
         return self.__repo.add(student_internship)
@@ -37,7 +37,7 @@ class StudentInternshipService:
         self.__repo.remove(student_internship)
 
     def update(self, student_internship):
-        student_internship_found = self.__repo.get_one(student_internship.get_id())
+        student_internship_found = self.__repo.get_one(student_internship.student_id)
         if student_internship_found is None:
             raise ValueError("User with given id does not exist.")
         self.__repo.update(student_internship)

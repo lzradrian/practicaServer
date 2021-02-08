@@ -49,7 +49,8 @@ def login():
                 session["role"] = 3
                 return redirect(url_for("secretara.home"))
             if (found_user.get_role() == 4):
-                pass
+                session["role"] = 4
+                return redirect(url_for("protectia_muncii.home"))
             if (found_user.get_role() == 5):
                 session["role"] = 5
                 return redirect(url_for("cadru_didactic_supervizor.home"))

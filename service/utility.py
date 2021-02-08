@@ -38,3 +38,24 @@ def get_student_activity_service():
     from service.student_activity_service import StudentActivityService
     repo = StudentActivityRepository()
     return StudentActivityService(repo)
+
+
+def get_declaratie_ubb_service():
+    from repository.declaratie_ubb_repository import DeclaratieUBBRepository
+    from service.declaratie_ubb_service import DeclaratieUBBService
+    repo = DeclaratieUBBRepository()
+    return DeclaratieUBBService(repo)
+
+
+def get_declaratie_firma_service():
+    from repository.declaratie_firma_repository import DeclaratieFirmaRepository
+    from service.declaratie_firma_service import DeclaratieFirmaService
+    repo = DeclaratieFirmaRepository()
+    return DeclaratieFirmaService(repo)
+
+
+def get_supervisor_info_service():
+    from repository.supervisor_info_repository import SupervisorInfoRepository
+    from service.supervisor_info_service import SupervisorInfoService
+    repo = SupervisorInfoRepository()
+    return SupervisorInfoService(repo)

@@ -18,8 +18,8 @@ class TutorInfoService:
             raise ValueError("TutorInfo with given id does not exist.")
         return tutor_info
 
-    def get_by_identifiers(self, name, year, group):
-        tutor_info = self.__repo.get_by_identifiers(name, year, group)
+    def get_by_name(self, name):
+        tutor_info = self.__repo.get_by_name(name)
         if tutor_info is None:
             raise ValueError("TutorInfo with given tutor_id does not exist.")
         return tutor_info

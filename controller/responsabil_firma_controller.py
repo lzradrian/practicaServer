@@ -124,39 +124,43 @@ def conventie():
 
 
 def get_associated_students():
-    from service.utility import get_internship_service, get_student_internship_service, get_user_service
+    from service.utility import get_internship_service, get_student_internship_service, get_user_service,\
+        get_student_info_service
 
     internship_service = get_internship_service()
     student_internship_service = get_student_internship_service()
     user_service = get_user_service()
+    student_info_service = get_student_info_service()
 
     internship = internship_service.get_by_representative_id(session["id"])
     student_interships = student_internship_service.get_by_internship_id(internship.id)
     students = []
     for si in student_interships:
-        students.append(user_service.getOne(si.student_id))
-    headings = (("Nume Student",))
-    student_names = tuple([(student.username,) for student in students])
-    return headings, student_names
+        students.append(student_info_service.getOne(si.student_id))
+    headings = (("Nume Student", "Grupa", "An"))
+    student_info = tuple([(student.name, student.group, student.year) for student in students])
+    return headings, student_info
 
 
 @responsabil_firma.route('/management', methods=["GET", "POST"])
 def management():
-    headings, student_names = get_associated_students()
-    return render_template("firmaResponsabil/managementResponsabilFirma.html", headings=headings, data=student_names)
+    headings, student_info = get_associated_students()
+    return render_template("firmaResponsabil/managementResponsabilFirma.html", headings=headings, data=student_info)
 
 
 @responsabil_firma.route('/add_student', methods=["GET", "POST"])
 def add_student():
     if request.method == "POST":
         from service.utility import get_internship_service, get_student_internship_service,\
-            get_user_service, get_student_info_service, get_tutor_info_service
+            get_user_service, get_student_info_service, get_tutor_info_service,\
+            get_supervisor_info_service
         from domain.student_internship import StudentInternship
 
-        headings, student_names = get_associated_students(session["id"])
+        headings, student_names = get_associated_students()
 
         name = request.form["name"]
         tutor_name = request.form["tutor_name"]
+        supervisor_name = request.form["supervisor_name"]
         year = request.form["year"]
         group = request.form["group"]
 
@@ -164,12 +168,14 @@ def add_student():
         student_internship_service = get_student_internship_service()
         student_info_service = get_student_info_service()
         tutor_info_service = get_tutor_info_service()
+        supervisor_info_service = get_supervisor_info_service()
 
         try:
             tutor_info = tutor_info_service.get_by_name(tutor_name)
+            supervisor_info = supervisor_info_service.get_by_name(supervisor_name)
             student_info = student_info_service.get_by_identifiers(name, year, group)
             internship = internship_service.get_by_representative_id(session["id"])
-            student_internship_service.add(StudentInternship(None, internship.id, student_info.id, tutor_info.id))
+            student_internship_service.add(StudentInternship(internship.id, student_info.id, tutor_info.id, supervisor_info.id))
         except ValueError:
             return render_template("firmaResponsabil/managementResponsabilFirma.html", headings=headings, student_names=student_names, error="No student with given identifiers could be found!")
     return render_template("firmaResponsabil/homeResponsabilFirma.html")

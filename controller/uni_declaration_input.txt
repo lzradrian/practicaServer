@@ -1,0 +1,8 @@
+StudentName abc
+StudentGroup 913
+StudentSpecialization sdf
+StudentYear 1
+DeclarationInternshipPeriod 10.10.2010-12.12.2010
+DeclarationSignDate 2021-02-07
+HomeAddress cvb
+CoordonatorName cvb
