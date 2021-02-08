@@ -37,3 +37,8 @@ if __name__ == '__main__':
     # todo: conventie-reprez-firma (preluarea datelor firmei din clasa CompanyInfo, ca la acord)
     app.run(debug=True)
 
+    #todo: trimis mail cu documentele la: emailpractica10@gmail.com
+
+    #teste pentru email (functioneaza)
+    #from controller.helpers.emailTools import send_email
+    #send_email(None,"subject","E:\Projects\PycharmProjects\practicaServer\\forms\\outputFirma.pdf","outputFirma.pdf");
