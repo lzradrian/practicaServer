@@ -14,6 +14,11 @@ class UserRepository:
         user = User.query.filter_by(username=id).first()
         return user
 
+    def filter_by_role(self, role):
+        from domain.user import User
+        users = User.query.filter_by(role=role).all()
+        return users
+
     def add(self, user):
         from controller import db
         db.session.add(user)

@@ -2,7 +2,7 @@ class StudentInternshipRepository:
     def get_all(self):
         from domain.student_internship import StudentInternship
         student_internships = StudentInternship.query.all()
-        return StudentInternship
+        return student_internships
 
     def get_one(self, id):
         from domain.student_internship import StudentInternship
