@@ -3,8 +3,8 @@ from controller import db
 
 class StudentInternship(db.Model):
     __tablename__ = 'StudentInternships'
-    internship_id = db.Column("internship_id", db.Integer, db.ForeignKey('Internships.id'), primary_key=True)
-    student_id = db.Column("student_id", db.Integer, db.ForeignKey('Users.id'))
+    internship_id = db.Column("internship_id", db.Integer, db.ForeignKey('Internships.id'))
+    student_id = db.Column("student_id", db.Integer, db.ForeignKey('Users.id'), primary_key=True)
     tutor_id = db.Column("tutor_id", db.Integer, db.ForeignKey('Users.id'))
     supervisor_id = db.Column("supervisor_id", db.Integer, db.ForeignKey('Users.id'))
 

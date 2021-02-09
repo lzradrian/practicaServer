@@ -217,7 +217,8 @@ def get_associated_students():
     student_info_service = get_student_info_service()
 
     internship = internship_service.get_by_representative_id(session["id"])
-    student_interships = student_internship_service.get_by_internship_id(internship.id)
+    #student_interships = student_internship_service.get_by_internship_id(internship.id)
+    student_interships = student_internship_service.getAll()
     students = []
     for si in student_interships:
         students.append(student_info_service.getOne(si.student_id))
@@ -225,11 +226,34 @@ def get_associated_students():
     student_info = tuple([(student.name, student.group, student.year) for student in students])
     return headings, student_info
 
+def get_supervisors():
+    from service.utility import get_user_service, get_supervisor_info_service
+
+    user_service = get_user_service()
+    supervisor_info_service = get_supervisor_info_service()
+
+    supervisors = user_service.filter_by_role(5)
+    supervisor_infos = [supervisor_info_service.getOne(s.id) for s in supervisors]
+    return list(zip([s.id for s in supervisors], [si.name for si in supervisor_infos]))
+
+
+def get_tutors():
+    from service.utility import get_user_service, get_tutor_info_service
+
+    user_service = get_user_service()
+    tutor_info_service = get_tutor_info_service()
+
+    tutors = user_service.filter_by_role(2)
+    tutor_infos = [tutor_info_service.getOne(t.id) for t in tutors]
+    return list(zip([t.id for t in tutors], [ti.name for ti in tutor_infos]))
 
 @responsabil_firma.route('/management', methods=["GET", "POST"])
 def management():
     headings, student_info = get_associated_students()
-    return render_template("firmaResponsabil/managementResponsabilFirma.html", headings=headings, data=student_info)
+    supervisors = get_supervisors()
+    tutors = get_tutors()
+    return render_template("firmaResponsabil/managementResponsabilFirma.html", headings=headings, data=student_info,
+                           supervisors=supervisors, tutors=tutors)
 
 
 @responsabil_firma.route('/add_student', methods=["GET", "POST"])
