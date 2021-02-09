@@ -2,7 +2,7 @@
 <html>
 <head>
 	<title>Documente Practica</title>
-	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="../styles.css">
 </head>
 <body>
 	<div class="documentDiv" style="height: 20%;top: 40%; left: 55%">
@@ -29,6 +29,8 @@
 			<input class="documentButton" type="submit" name="tutoreFirmaEvaluareButton" value="Completeaza">
 		</form>
 	</div>
-	<a href="{{url_for('auth.logout')}}"> Logout </a>
+	<form action="{{url_for('auth.logout')}}" class="logoutButtonForm">
+		<input class="documentButton" type="submit" name="tutoreFirmaLogoutButton" value="Logout">
+	</form>
 </body>
 </html>
