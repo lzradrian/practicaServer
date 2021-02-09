@@ -205,6 +205,79 @@ def student_uni_declaration():
         return redirect(url_for("student.home"))
     return render_template("student/declaratieFacultateStudent.html")
 
+def get_checked_checkboxes(form):
+    checkboxes = {}
+    if form.get("transport_in_comun"):
+        checkboxes["PublicTransport"] = 1
+    if form.get("metrou"):
+        checkboxes["Metro"] = 1
+    if form.get("v_personal"):
+        checkboxes["PersonalVehicle"] = 1
+    if form.get("v_societate"):
+        checkboxes["PublicVehicle"] = 1
+    if form.get("avion"):
+        checkboxes["Plane"] = 1
+    if form.get("pieton"):
+        checkboxes["AsPedestrian"] = 1
+    if form.get("bicicleta"):
+        checkboxes["Bicycle"] = 1
+    if form.get("motocicleta"):
+        checkboxes["Motorcycle"] = 1
+    return checkboxes
+
+@student.route("/student_traseu_declaration", methods=["POST", "GET"])
+def student_traseu_declaration():
+    from service.utility import get_declaratie_traseu_service
+    from controller.helpers.pdfTools import get_fields_from_pdf
+
+    declaratie_service = get_declaratie_traseu_service()
+    already_completed = False
+    try:
+        declaratie_found = declaratie_service.getOne(session["id"])
+        already_completed = True
+    except ValueError:
+        pass
+
+    if already_completed:
+        declaratie = declaratie_service.getOne(session["id"])
+        fields = get_fields_from_pdf(declaratie.content)
+
+    if request.method == "POST":
+        from repository.student_info_repository import StudentInfoRepository
+        from service.student_info_service import StudentInfoService
+        from domain.student_info import StudentInfo
+        from datetime import date
+        from domain.declaratie_traseu_file import fields
+        from controller.helpers.pdfTools import create_pdf_from_dic
+        from domain.declaratie_traseu import DeclaratieTraseu
+        from datetime import datetime
+        import os
+
+        repo = StudentInfoRepository()
+        service = StudentInfoService(repo)
+
+        info = service.getOne(session["id"])
+        date = str(date.today())
+        params = [info.name, info.pnc, info.faculty, info.group,
+                  request.form["domiciliu_practica"], request.form["practica_domiciliu"],
+                  request.form["practica"], request.form["data_practica1"], request.form["data_practica2"],
+                  request.form["traseu_domiciliu_practica"], request.form["traseu_practica_domiciliu"],
+                  date, request.form["signature"]]
+        checkboxes = get_checked_checkboxes(request.form)
+        pair_input = dict(zip(fields.keys(), params))
+        pair_input.update(checkboxes)
+
+        content = create_pdf_from_dic("DeclaratieDeTraseu.pdf", "DeclaratieDeTraseu-" + info.name + ".pdf", pair_input)
+
+        if already_completed:
+            declaratie_service.update(DeclaratieTraseu(session["id"], datetime.now(), content, False))
+        else:
+            declaratie_service.add(DeclaratieTraseu(session["id"], datetime.now(), content, False))
+
+        return redirect(url_for("student.home"))
+
+    return render_template("student/declaratieTraseuStudent.html")
+
 
 @student.route("/student_info", methods=["POST", "GET"])
 def student_info():
@@ -265,6 +338,21 @@ def raport():
     activities = tuple([(activity.period, activity.no_hours, activity.description) for activity in activities])
 
     return render_template("student/raportStudent.html", headings=headings, data=activities)
+
+
+@student.route('/download_declaratie_ubb', methods=["GET"])
+def download_declaratie_ubb():
+    pass
+
+
+@student.route('/download_declaratie_firma', methods=["GET"])
+def download_declaratie_ubb():
+    pass
+
+
+@student.route('/download_declaratie_traseu', methods=["GET"])
+def download_declaratie_ubb():
+    pass
 
 
 @student.route('/download', methods=["GET", "POST"])

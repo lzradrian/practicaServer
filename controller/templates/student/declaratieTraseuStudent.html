@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="documentDiv row justify-content-center text-center">
+		<div class="col-md-3">
+			<h2>Date Practica la Firma</h2><br>
+			{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for msg in messages %}
+					<p>{{msg}}</p>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
+		<form action="{{ url_for('student.student_traseu_declaration') }}" method="post" style="width: 100%">
+			<label for="domiciliu_practica">Adresa domiciliu-practica:</label><br>
+			<input type="text" id="domiciliu_practica" name="domiciliu_practica" class="form-control"><br>
+
+			<label for="practica_domiciliu">Adresa practica-domiciliu:</label><br>
+			<input type="text" id="practica_domiciliu" name="practica_domiciliu" class="form-control"><br>
+
+            <label for="practica">Adresa practica:</label><br>
+			<input type="text" id="practica" name="practica" class="form-control"><br>
+
+            <label for="data_practica1">Data deplasarii catre partenerul de practica:</label><br>
+			<input type="text" id="data_practica1" name="data_practica1" class="form-control"><br>
+
+            <label for="data_practica2">Data deplasarii de la partenerul de practica:</label><br>
+			<input type="text" id="data_practica2" name="data_practica2" class="form-control"><br>
+
+            <label for="traseu_domiciliu_practica">Traseu domiciliu-practica:</label><br>
+			<input type="text" id="traseu_domiciliu_practica" name="traseu_domiciliu_practica" class="form-control"><br>
+
+            <label for="traseu_practica_domiciliu">Traseu practica-domiciliu:</label><br>
+			<input type="text" id="traseu_practica_domiciliu" name="traseu_practica_domiciliu" class="form-control"><br>
+
+            <p>Mijloacele de deplasare folosite:</p>
+
+            <input type="checkbox" id="transport_in_comun" name="transport_in_comun" value="transport_in_comun">
+            <label for="transport_in_comun">mijloace de transport in comun de suprafata</label><br>
+
+            <input type="checkbox" id="metrou" name="metrou" value="metrou">
+            <label for="metrou">metrou</label><br>
+
+            <input type="checkbox" id="v_personal" name="v_personal" value="v_personal">
+            <label for="v_personal">vehicul proprietate personala</label><br>
+
+            <input type="checkbox" id="v_societate" name="v_societate" value="v_societate">
+            <label for="v_societate">vehicul societate</label><br>
+
+            <input type="checkbox" id="avion" name="avion" value="avion">
+            <label for="avion">avion</label><br>
+
+            <input type="checkbox" id="pieton" name="pieton" value="pieton">
+            <label for="pieton">ca pieton</label><br>
+
+            <input type="checkbox" id="bicicleta" name="bicicleta" value="bicicleta">
+            <label for="bicicleta">cu bicicleta</label><br>
+
+            <input type="checkbox" id="motocicleta" name="motocicleta" value="motocicleta">
+            <label for="motocicleta">cu motocicleta/scuter</label><br>
+
+            <label for="signature">Semnatura:</label><br>
+			<input type="text" id="signature" name="signature" class="form-control"><br>
+
+			<input type="submit" value="Completeaza" class="btn btn-primary">
+		</form>
+	</div>
+	</div>
+</body>
+</html>
