@@ -31,6 +31,9 @@
 				{% endfor %}
 			{% endif %}
 		{% endwith %}
+		{% if validated %}
+			<p>Declaratia trimisa a fost validata.</p>
+		{% endif %}
 			<form action="{{ url_for('student.student_company_declaration') }}" method="post" style="width: 100%">
 			<label for="interval">Interval Practica:</label><br>
 			<input type="text" id="interval" name="interval" class="form-control"><br>

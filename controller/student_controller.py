@@ -165,9 +165,11 @@ def student_uni_declaration():
 
     declaratie_service = get_declaratie_ubb_service()
     already_completed = False
+    validated = False
     try:
         declaratie_found = declaratie_service.get_with_student_id(session["id"])
         already_completed = True
+        validated = declaratie_found.checked
     except ValueError:
         pass
 
@@ -203,6 +205,8 @@ def student_uni_declaration():
             declaratie_service.add(DeclaratieUBB(None, session["id"], datetime.now(), content, False))
 
         return redirect(url_for("student.home"))
+    else:
+        return render_template("student/declaratieFacultateStudent.html", validated=validated)
     return render_template("student/declaratieFacultateStudent.html")
 
 def get_checked_checkboxes(form):

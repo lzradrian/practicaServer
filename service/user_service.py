@@ -24,6 +24,12 @@ class UserService:
             raise ValueError("User with given username does not exist.")
         return user
 
+    def filter_by_role(self, role):
+        users = self.__repo.filter_by_role(role)
+        if users is None:
+            raise ValueError("No users with the given role were found.")
+        return users
+
     def remove(self, id):
         user = self.__repo.getOne(id)
         if user is None:
