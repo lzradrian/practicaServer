@@ -27,6 +27,7 @@ class TutorInfoRepository:
 
     def update(self, tutor_info):
         from controller import db
+        #todo
         from domain.tutor_info import TutorInfo
         db.session.commit()
         return tutor_info

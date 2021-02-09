@@ -35,28 +35,28 @@
 		<form action="{{ url_for('student.student_info') }}" method="post">
 
 			<label for="name">Nume si Prenume:</label><br>
-			<input type="text" id="name" name="name" class="form-control"><br><br>
+			<input type="text" id="name" name="name" class="form-control" required><br><br>
 
 			<label for="pnc">CNP:</label><br>
-			<input type="text" id="pnc" name="pnc" class="form-control"><br><br>
+			<input type="text" id="pnc" name="pnc" class="form-control" required><br><br>
 
 			<label for="student_function">Functie:</label><br>
-			<input type="text" id="student_function" name="student_function" class="form-control"><br><br>
+			<input type="text" id="student_function" name="student_function" class="form-control" required><br><br>
 
 			<label for="faculty">Facultate:</label><br>
-			<input type="text" id="faculty" name="faculty"><br><br>
+			<input type="text" id="faculty" name="faculty" class="form-control" required><br><br>
 
 			<label for="year">Anul Universitar:</label><br>
-			<input type="text" id="year" name="year" class="form-control"><br><br>
+			<input type="text" id="year" name="year" class="form-control" required><br><br>
 
 			<label for="group">Grupa:</label><br>
-			<input type="text" id="group" name="group" class="form-control"><br><br>
+			<input type="text" id="group" name="group" class="form-control" required><br><br>
 
 			<label for="specialization">Specializarea:</label><br>
-			<input type="text" id="specialization" name="specialization" class="form-control"><br><br>
+			<input type="text" id="specialization" name="specialization" class="form-control" required><br><br>
 
 			<label for="study_line">Linia de Studiu:</label><br>
-			<input type="text" id="study_line" name="study_line" class="form-control"><br>
+			<input type="text" id="study_line" name="study_line" class="form-control" required><br>
 
             <input type="submit" class="btn btn-primary btn-sm" value="Completeaza">
 		</form>

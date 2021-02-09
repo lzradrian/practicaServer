@@ -1,13 +1,18 @@
 from flask import Blueprint, redirect, flash, render_template, session, request, url_for
 
-from controller.helpers.authorize import verify_role
+from controller.helpers.authorize import verify_role, get_home_route
 from repository.conventie_repository import ConventieRepository
 from service.conventie_service import ConventieService
-
+from repository.student_internship_repository import StudentInternshipRepository
+from service.student_internship_serivce import StudentInternshipService
+from repository.supervisor_info_repository import SupervisorInfoRepository
+from service.supervisor_info_service import SupervisorInfoService
+from repository.student_info_repository import StudentInfoRepository
+from service.student_info_service import StudentInfoService
 cadru_didactic_supervizor = Blueprint('cadru_didactic_supervizor', __name__)
 
 
-def modify_conventie_input(conventie, nume):
+def modify_conventie_input(conventie, nume,functie,email,phone,fax):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
@@ -18,10 +23,10 @@ def modify_conventie_input(conventie, nume):
     s = StringIO(content)
     for line in s:
         line = line.replace("SupervisorFunction Function", "SupervisorFunction " + nume)
-        line = line.replace("SupervisorName Name", "SupervisorName " + nume)
-        line = line.replace("SupervisorEmail Email", "SupervisorEmail " + nume)
-        line = line.replace("SupervisorPhone Phone", "SupervisorPhone " + nume)
-        line = line.replace("SupervisorFax Fax", "SupervisorFax " + nume)
+        line = line.replace("SupervisorName Name", "SupervisorName " + functie)
+        line = line.replace("SupervisorEmail Email", "SupervisorEmail " + email)
+        line = line.replace("SupervisorPhone Phone", "SupervisorPhone " + phone)
+        line = line.replace("SupervisorFax Fax", "SupervisorFax " + fax)
         # todo: alte date
 
         replaced_content = replaced_content + line
@@ -36,29 +41,44 @@ def modify_conventie_input(conventie, nume):
 
 @cadru_didactic_supervizor.route('/conventie_cadru_didactic_supervizor', methods=["POST", "GET"])
 def conventie():
+    supervizorRepo = SupervisorInfoRepository()
+    supervizorService = SupervisorInfoService(supervizorRepo)
+    conventiiDeModificat = []
+    conventieRepo = ConventieRepository()
+    conventieService = ConventieService(conventieRepo)
+    studentInternshipRepo = StudentInternshipRepository()
+    studentInternshipServ = StudentInternshipService(studentInternshipRepo)
+    conventii = conventieService.getAll()
+    for conventie in conventii:
+        try:
+            if studentInternshipServ.getOne(conventie.get_id()).supervisor_id == session["id"]:
+                if conventie.get_completedByStudent() == True and conventie.get_completedByFirmaResponsabil() == True and conventie.get_completedByFirmaTutori() == True and conventie.get_completedByCadruDidacticSupervizor() == False:
+                    conventiiDeModificat.append(conventie)
+        except:
+            continue
+
     if request.method == "POST":
+        info = supervizorService.getOne(session["id"])
+        nume = info.name
+        functie= info.function
+        email=info.email
+        phone=info.phone
+        fax=info.fax
+        signature = request.form["signature"] #todo
 
-        # todo: sa poata modifica doar conventiile studentilor pe care ii supervizeaza
-        conventieRepo = ConventieRepository()
-        conventieService = ConventieService(conventieRepo)
-        conventii = conventieService.getAll()
-        conventieDeModificat = None
-        for conventie in conventii:
-            if conventie.get_completedByStudent() == True and conventie.get_completedByFirmaResponsabil() == True and conventie.get_completedByFirmaTutori() == True and conventie.get_completedByCadruDidacticSupervizor() == False:
-                conventieDeModificat = conventie
-                break
 
-        if conventieDeModificat == None:
-            print("Nu s-a gasit o conventie de modificat")
-            return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
+        repoStudInf = StudentInfoRepository()
+        servStudInf = StudentInfoService(repoStudInf)
+        numeStudenti = []
+        for conventie in conventiiDeModificat:
+            modify_conventie_input(conventie,nume,functie,email,phone,fax)
+            numeStudenti.append(servStudInf.getOne(conventie.get_id()).name)
+        mesaj = "Ati modificat cu succes conventiile urmatorilor studenti: "
+        for nume in numeStudenti:
+            mesaj = mesaj + str(nume) + "; "
+        flash(mesaj)
 
-        # todo: put real data from forms
-        # numeFirma = request.form["numeFirma"]
-        nume = "CADRUDIDACTICSUPERVIZOR"
-
-        modify_conventie_input(conventieDeModificat, nume)
-
-        return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
+        return render_template("cadruDidacticSupervizor/homeCadruDidacticSupervizor.html")
     else:
         return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
 
@@ -68,3 +88,6 @@ def home():
     if verify_role(5) == 0:
         return  redirect(url_for(get_home_route()))
     return render_template("cadruDidacticSupervizor/homeCadruDidacticSupervizor.html")
+
+
+#todo: implement general data for cadruDidacticSuperizor

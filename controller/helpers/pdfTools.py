@@ -1,3 +1,6 @@
+from controller.helpers.emailTools import send_email
+
+
 def create_pdf(fisier_input_pdf, fisier_input_txt, fisier_output_pdf):
     '''
     :param fisier_input_pdf: AcordPractica.pdf / ConventiePractica.pdf / DeclaratieActivitateUBB.pdf
@@ -17,12 +20,12 @@ def create_pdf(fisier_input_pdf, fisier_input_txt, fisier_output_pdf):
     os.system('cmd /c "FormEditor ' + fisier_input_pdf + ' ' + fisier_input_txt + ' ' + fisier_output_pdf)
 
 
-def create_pdf_from_files_and_doc(fisier_input_pdf, fisier_output_pdf, doc):
+def create_pdf_from_files_and_doc(fisier_input_pdf, fisier_output_pdf, doc,subject):
     '''
     :param fisier_input_pdf: AcordPractica.pdf / ConventiePractica.pdf / DeclaratieActivitateUBB.pdf
                              DeclaratieActivitateFirma.pdf / DeclaratieDeTraseu.pdf
     :param fisier_output_pdf: numele pdf-ului generat
-    :param conventie: ConventieInput / AcordPractica
+
     '''
     import os
 
@@ -37,20 +40,25 @@ def create_pdf_from_files_and_doc(fisier_input_pdf, fisier_output_pdf, doc):
 
     # write content from conventie to file
     numeFisierTemporar = "temporar_file.txt"
-    conventie_input_txt_location = dir_location + '\\forms\\' + numeFisierTemporar
+    #conventie_input_txt_location = dir_location + '\\forms\\' + numeFisierTemporar
 
-    text_file = open(conventie_input_txt_location, "w+")
-    text_file.write(doc.get_content())
-    text_file.close()
+    #text_file = open(conventie_input_txt_location, "w+")
+    #text_file.write(doc.get_content())
+    #text_file.close()
 
     dir_location = dir_location + "\\forms\\FormEditor\\FormEditor\\bin\\Debug\\netcoreapp3.1"
+    text_file = open(dir_location+"\\"+numeFisierTemporar, "w+")
+    text_file.write(doc.get_content())
+    text_file.close()
     os.chdir(dir_location)
+
 
     # generate pdf
     os.system('cmd /c "FormEditor ' + fisier_input_pdf + ' ' + numeFisierTemporar + ' ' + fisier_output_pdf)
-
+    send_email(subject,None,dir_location+"\\"+fisier_output_pdf,fisier_output_pdf)
     # delete used file
-    os.remove(conventie_input_txt_location)
+    os.remove(dir_location+"\\"+numeFisierTemporar)
+    #os.remove(dir_location)
 
 
 def create_pdf_from_dic(fisier_input_pdf, fisier_output_pdf,data):

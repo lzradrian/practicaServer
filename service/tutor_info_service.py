@@ -31,7 +31,7 @@ class TutorInfoService:
         self.__repo.remove(tutor_info)
 
     def update(self, tutor_info):
-        tutor_info_found = self.__repo.getOne(tutor_info.get_id())
+        tutor_info_found = self.__repo.getOne(tutor_info.id)
         if tutor_info_found is None:
             raise ValueError("TutorInfo with given id does not exist.")
         self.__repo.update(tutor_info)

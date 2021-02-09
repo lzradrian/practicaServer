@@ -10,6 +10,14 @@ from service.acord_service import AcordService
 from service.user_service import UserService
 from service.company_info_service import CompanyInfoService
 from service.conventie_service import ConventieService
+from repository.internship_repository import InternshipRepository
+from service.internship_service import InternshipService
+from repository.student_internship_repository import StudentInternshipRepository
+from service.student_internship_serivce import StudentInternshipService
+from repository.student_info_repository import StudentInfoRepository
+from service.student_info_service import StudentInfoService
+from repository.tutor_info_repository import TutorInfoRepository
+from service.tutor_info_service import TutorInfoService
 
 responsabil_firma = Blueprint('responsabil_firma', __name__)
 
@@ -17,13 +25,16 @@ responsabil_firma = Blueprint('responsabil_firma', __name__)
 def modify_conventie_input(conventie, firm, city, street, number, phone, fax, email, code, account, banca,
                            representative,
                            function, address, hours, startInternshipDate, endInternshipDate, tutor, tutorfunction,
-                           tutorphone, tutorfax, tutormail, date, signature):
+                           tutorphone, tutorfax, tutormail, date, signature,awardsGranted,rewardsGranted,otherConditions
+                           , workContract, noWorkContract, EUFinanced,
+                           projectBased, projectName
+                           ):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
     content = conventie.get_content()
     replaced_content = ""
-
+    print("AICI:",tutor,tutorfunction, tutorphone ,tutorfax ,tutormail)#OK
     from io import StringIO
     s = StringIO(content)
     for line in s:
@@ -49,7 +60,18 @@ def modify_conventie_input(conventie, firm, city, street, number, phone, fax, em
         line = line.replace("TutorFax Fax", "TutorFax " + tutorfax)
         line = line.replace("TutorEmail Email", "TutorEmail " + tutormail)
         line = line.replace("TutorFunction Function", "TutorFunction " + tutorfunction)
-        # todo: articolul 12 nu este implementat. Este necesar?
+        # art12
+        line = line.replace("AwardsGranted None", "AwardsGranted " + awardsGranted)
+        line = line.replace("RewardsGranted None", "RewardsGranted " + rewardsGranted)
+        line = line.replace("OtherConditions -", "OtherConditions " + otherConditions)
+        # art12
+        #art14
+        line = line.replace("WorkContract 1", "WorkContract " +workContract)
+        line = line.replace("NoWorkContract 0", "NoWorkContract " +noWorkContract)
+        line = line.replace("EUFinanced 0", "EUFinanced " +EUFinanced)
+        line = line.replace("ProjectBased 0", "ProjectBased " +projectBased)
+        line = line.replace("ProjectName None", "ProjectName " +projectName)
+        #art14
         line = line.replace("ConventionSignDate Date", "ConventionSignDate " + date)
         line = line.replace("SignRepresentativeName Name", "SignRepresentativeName " + representative)
         line = line.replace("SignRepresentativeDate Date", "SignRepresentativeDate " + date)
@@ -58,69 +80,131 @@ def modify_conventie_input(conventie, firm, city, street, number, phone, fax, em
         line = line.replace("AcknowledgementTutorName Name", "AcknowledgementTutorName " + tutor)
         line = line.replace("AcknowledgementTutorFunction Function", "AcknowledgementTutorFunction " + tutorfunction)
         line = line.replace("AcknowledgementTutorDate Date", "AcknowledgementTutorDate " + date)
+        line = line.replace("AcknowledgementSupervisorDate Date", "AcknowledgementSupervisorDate " + date)
 
         replaced_content = replaced_content + line
-
+    print(replaced_content)
     conventie.set_content(replaced_content)
     conventie.set_completedByFirmaResponsabil(True)
 
     conventieRepo = ConventieRepository()
     conventieService = ConventieService(conventieRepo)
     conventieService.update(conventie)
-    #from controller.helpers.pdfTools import create_pdf_from_files_and_doc
-    #create_pdf_from_files_and_doc("ConventiePractica.pdf", "output.pdf", conventie)
+    print("\n\n\n",conventie.get_content())
 
 
 @responsabil_firma.route('/conventie_responsabil_firma', methods=["POST", "GET"])
 def conventie():
+    from datetime import date, datetime
+    companyInfoRepo = CompanyInfoRepository()
+    companyInfoServ = CompanyInfoService(companyInfoRepo)
+
+    intershipRepo = InternshipRepository()
+    internshipServ = InternshipService(intershipRepo)
+    idintership = internshipServ.get_by_representative_id(session["id"]).id
+    internship = internshipServ.getOne(idintership)
+
+    studentInternshipRepo = StudentInternshipRepository()
+    studentInternshipServ = StudentInternshipService(studentInternshipRepo)
+    tInfoRepo = TutorInfoRepository()
+    tInfoServ = TutorInfoService(tInfoRepo)
+
+    conventieRepo = ConventieRepository()
+    conventieService = ConventieService(conventieRepo)
+    conventii = [] #lista conventiilor
+
+    repoStudInf = StudentInfoRepository()
+    servStudInf = StudentInfoService(repoStudInf)
+    for studentInternship in studentInternshipServ.getAll():
+        if studentInternship.internship_id == idintership:
+            conventii.append(conventieService.getOne(studentInternship.student_id))
+
+    #conventii = [] contine lista conventiilor ce tin de reprezentatul_firmei logat
+    #urmeaza sa filtrez daca acestea au fost modificate de student
+    conventiiDeModificat=[]
+    for conventie in conventii:
+        try:
+            if conventie.get_completedByStudent() == True and conventie.get_completedByFirmaTutori() == True and conventie.get_completedByFirmaResponsabil() == False:
+                    conventiiDeModificat.append(conventie)
+        except:
+            continue
+
     if request.method == "POST":
+        info = companyInfoServ.getOne(session["id"])
+        firm = info.name #firm = request.form["firm"]
+        city = info.city#city = request.form["city"]
+        street = info.street#street = request.form["street"]
+        number = info.streetNo#number = request.form["number"]
+        phone = info.phone#phone = request.form["phone"]
+        fax=info.fax#fax = request.form["fax"]
+        email=info.email #email = request.form["email"]
+        code=info.fiscalCode#code = request.form["code"]
+        account = info.iban#account = request.form["account"]
+        banca = info.bank#banca = request.form["banca"]
+        representative = info.legalRepresentative#representative = request.form["representative"]
+        function = info.legalRepresentativeFunction#function = request.form["function"]
+        address=info.adresaStagiuPractica#address = request.form["address"]
 
-        # todo: sa poata modifica doar conventiile studentilor de la firma lui
-        conventieRepo = ConventieRepository()
-        conventieService = ConventieService(conventieRepo)
-        conventii = conventieService.getAll()
-        conventieDeModificat = None
-        for conventie in conventii:
-            if conventie.get_completedByStudent() == True and conventie.get_completedByFirmaResponsabil() == False:
-                conventieDeModificat = conventie
-                break
+        startInternshipDate=str(internship.start_date) #startInternshipDate = request.form["startInternshipDate"]
+        endInternshipDate = str(internship.end_date)#endInternshipDate = request.form["endInternshipDate"]
+        #tutor = request.form["tutor"]
+        #tutorfunction = request.form["tutorfunction"]
+        #tutorphone = request.form["tutorphone"]
+        #tutorfax = request.form["tutorfax"]
+        #tutormail = request.form["tutormail"]
 
-        if conventieDeModificat == None:
-            print("Nu s-a gasit o conventie de modificat")
-            return render_template("firmaResponsabil/conventieResponsabilFirma.html")
+        #todo:get from internship
+        awardsGranted = internship.awards
+        rewardsGranted =internship.rewards
+        otherConditions =internship.otherConditions
+        hours = internship.hours
+        workContract = internship.workContract
+        woWorkContract =internship.noWorkContract
+        EUFinanced = internship.EUFinanced
+        projectBased = internship.projectBased
+        projectName = internship.projectName
 
-        # todo: put real data from forms
-        firm = request.form["firm"]
-        city = request.form["city"]
-        street = request.form["street"]
-        number = request.form["number"]
-        phone = request.form["phone"]
-        fax = request.form["fax"]
-        email = request.form["email"]
-        code = request.form["code"]
-        account = request.form["account"]
-        banca = request.form["banca"]
-        representative = request.form["representative"]
-        function = request.form["function"]
-        address = request.form["address"]
-        hours = request.form["hours"]
-        startInternshipDate = request.form["startInternshipDate"]
-        endInternshipDate = request.form["endInternshipDate"]
-        tutor = request.form["tutor"]
-        tutorfunction = request.form["tutorfunction"]
-        tutorphone = request.form["tutorphone"]
-        tutorfax = request.form["tutorfax"]
-        tutormail = request.form["tutormail"]
-        date = request.form["date"]
+
+        date = str(date.today())
         signature = request.form["signature"]
-        modify_conventie_input(conventieDeModificat, firm, city, street, number, phone, fax, email, code, account,
+        #numeStudentSelect = request.form['numeStudent']
+
+        numeStudenti = []
+        for conventie in conventiiDeModificat:
+            numeStudenti.append(servStudInf.getOne(conventie.get_id()).name)
+            #adaug aici datele pentru tutorele studentului respectiv
+            studentInternship = studentInternshipServ.get_by_student_id(conventie.get_id())
+            tutorInfo = tInfoServ.getOne(studentInternship.tutor_id)
+            tutor = tutorInfo.name
+            tutorfunction = tutorInfo.function
+            tutorphone = tutorInfo.phone
+            tutorfax =tutorInfo.fax
+            tutormail =tutorInfo.email
+            #print("AICI:",tutor,tutorfunction, tutorphone ,tutorfax ,tutormail)#OK
+            modify_conventie_input(conventie, firm, city, street, number, phone, fax, email, code, account,
                                banca, representative,
                                function, address, hours, startInternshipDate, endInternshipDate, tutor,
-                               tutorfunction, tutorphone, tutorfax, tutormail, date, signature)
-
-        return render_template("firmaResponsabil/conventieResponsabilFirma.html")
+                               tutorfunction, tutorphone, tutorfax, tutormail, date, signature,awardsGranted,
+                                   rewardsGranted,otherConditions,workContract,woWorkContract,EUFinanced,
+                                   projectBased,projectName)
+        mesaj = "Ati modificat cu succes conventiile urmatorilor studenti: "
+        for nume in numeStudenti:
+            mesaj = mesaj + str(nume) + "; "
+        flash(mesaj)
+        return render_template("firmaResponsabil/homeResponsabilFirma.html")
     else:
-        return render_template("firmaResponsabil/conventieResponsabilFirma.html")
+        try:
+            #print("sesiune id resp firma:",session["id"])
+            info = companyInfoServ.getAll()
+            #rint(info)
+            if len(conventiiDeModificat) == 0:
+                flash("Nu sunt conventii de completat!")
+                return render_template("firmaResponsabil/homeResponsabilFirma.html")
+            return render_template("firmaResponsabil/conventieResponsabilFirma.html")
+        except:
+            flash("Completati datele generale inainte de completarea conventiei!")
+            # return render_template("student/homeStudent.html")
+            return render_template("firmaResponsabil/homeResponsabilFirma.html")
 
 
 def get_associated_students():
