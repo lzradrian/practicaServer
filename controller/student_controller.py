@@ -4,6 +4,8 @@ from controller.helpers.authorize import verify_role, auth_required_with_role, g
 from controller.helpers.pdfTools import create_pdf_from_dic
 from repository.conventie_repository import ConventieRepository
 from service.conventie_service import ConventieService
+from repository.student_info_repository import StudentInfoRepository
+from service.student_info_service import StudentInfoService
 
 student = Blueprint('student', __name__)
 
@@ -50,24 +52,28 @@ def create_conventie_input(name, country, city, street, number, apartment, count
     from domain.conventie_input import ConventieInput
     conventieRepo = ConventieRepository()
     conventieService = ConventieService(conventieRepo)
-    conventie = ConventieInput(replaced_content)
+    conventie = ConventieInput(session["id"], replaced_content)
     conventie.set_completedByStudent(True)
-    conventieService.add_or_update(conventie)
+    try:
+        flash("Ati modificat datele conventiei cu succes!")
+        conventieService.update(conventie)
+    except:
+        flash("Ati completat conventia cu succes!")
+        conventieService.add(conventie)
+    # conventieService.add_or_update(conventie)
 
 
 @student.route("/student_conventie", methods=["POST", "GET"])
 def conventie():
     if request.method == "POST":
-        from repository.student_info_repository import StudentInfoRepository
-        from service.student_info_service import StudentInfoService
         from domain.student_info import StudentInfo
         from domain.conventie_student_file import fields
-        from controller.user_controller import userService
+        from datetime import date, datetime
+        studentInfoRepo = StudentInfoRepository()
+        studentInfoServ = StudentInfoService(studentInfoRepo)
+        info = studentInfoServ.getOne(session["id"])
 
-
-        info = userService.getOne(session["id"])
-
-        name = info.username
+        name = info.name
         cnp = info.pnc
         group = info.group
         specialty = info.specialization
@@ -87,42 +93,29 @@ def conventie():
             id = request.form["id"]
             birthdate = request.form["birthdate"]
             birthcity = request.form["birthlocation"]
-            date = request.form["signdate"]
-            signature = request.form["signature"] #nefolosit ulterior
+            date = str(date.today())
+            signature = request.form["signature"] #todo: nefolosit ulterior
         except:
             flash("Cel putin un camp nu este completat!")
             return redirect(url_for("student_conventie.home"))
-        '''
-        #varianta2
-        #params = [info.name, info.pnc, info.group, info.specialization, info.year,
-        #          info.study_line,request.form["city"], request.form["street"],
-        #          request.form["number"],request.form["apartment"], request.form["county"] ,request.form["phone"],
-        #          request.form["email"],request.form["series"],request.form["id"], request.form["birthdate"],
-        #          request.form["birthlocation"] ,info.student_function,request.form["nationality"] ,request.form["signdate"]
-        #         ,info.name
-        #          ]
-        #pair_input = dict(zip(fields.keys(), params))
 
-        #content=""
-        #for k, v in pair_input.items():
-        #    content= content+ str(k) + " "+ str(v) + "\n"
-
-        #from domain.conventie_input import ConventieInput
-        #conventieRepo = ConventieRepository()
-        #conventieService = ConventieService(conventieRepo)
-        #conventie = ConventieInput(content)
-        #conventie.set_completedByStudent(True)
-        #conventieService.add_or_update(conventie)
-
-        #create_pdf_from_dic("ConventiePractica.pdf", "outputConventie.pdf", pair_input)
-        '''
         create_conventie_input(name, country, city, street, number, apartment, county, phone, email, cnp, series,
                                id, birthdate, birthcity, function, year, group, specialty, line, date,
                                signature)
 
         return redirect(url_for("student.home"))
     else:
-        return render_template("student/conventieStudent.html")
+        studentInfoRepo = StudentInfoRepository()
+        studentInfoServ = StudentInfoService(studentInfoRepo)
+        try:
+            info = studentInfoServ.getOne(session["id"])
+            #todo: campurile sa fie completate cu valorile introduse anterior
+            return render_template("student/conventieStudent.html")
+        except:
+            flash("Completati datele generale inainte de completarea conventiei!")
+            #return render_template("student/homeStudent.html")
+            return redirect(url_for("student.home"))
+
 
 
 @student.route("/student_company_declaration", methods=["POST", "GET"])
@@ -292,7 +285,7 @@ def download():
         tutor = tutor_info_service.getOne(student_internship.tutor_id)
         activities = student_activity_service.get_all_with_student_id(id)
 
-        from form_utility import create_activity_html
+        from controller.form_utility import create_activity_html
         parameters = {}
         parameters["name"] = student_info.name
         parameters["faculty"] = student_info.faculty

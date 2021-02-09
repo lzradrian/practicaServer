@@ -5,7 +5,7 @@ class StudentInternshipService:
     def add(self, student_internship):
         student_internship_found = self.__repo.get_one(student_internship.student_id)
         if student_internship_found is not None:
-            raise ValueError("Already exists a user with given id")
+            raise ValueError("Already exists a StudentInternship with given id")
         return self.__repo.add(student_internship)
 
     def getAll(self):
@@ -15,25 +15,25 @@ class StudentInternshipService:
     def getOne(self, id):
         student_internship = self.__repo.get_one(id)
         if student_internship is None:
-            raise ValueError("User with given id does not exist.")
+            raise ValueError("StudentInternship with given id does not exist.")
         return student_internship
 
     def get_by_internship_id(self, internship_id):
         student_internship = self.__repo.get_by_internship_id(internship_id)
         if student_internship is None:
-            raise ValueError("User with given username does not exist.")
+            raise ValueError("StudentInternship with given username does not exist.")
         return student_internship
 
     def get_by_student_id(self, student_id):
         student_internship = self.__repo.get_by_student_id(student_id)
         if student_internship is None:
-            raise ValueError("User with given username does not exist.")
+            raise ValueError("StudentInternship with given username does not exist.")
         return student_internship
 
     def remove(self, id):
         student_internship = self.__repo.get_one(id)
         if student_internship is None:
-            raise ValueError("User with given id does not exist.")
+            raise ValueError("StudentInternship with given id does not exist.")
         self.__repo.remove(student_internship)
 
     def update(self, student_internship):

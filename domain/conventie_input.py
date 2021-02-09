@@ -12,7 +12,8 @@ class ConventieInput(db.Model):
     completedByCadruDidacticSupervizor = db.Column("completedByCadruDidacticSupervizor", db.BOOLEAN)
     completedByDecan = db.Column("completedByDecan", db.BOOLEAN)
 
-    def __init__(self, content):
+    def __init__(self, id, content):
+        self._id = id
         self.content = content
         self.completedByStudent = False
         self.completedByFirmaResponsabil = False

@@ -3,21 +3,23 @@ from flask import Blueprint, redirect, flash, render_template, session, request,
 from controller.helpers.authorize import verify_role, get_home_route
 from repository.conventie_repository import ConventieRepository
 from service.conventie_service import ConventieService
-
+from repository.student_info_repository import StudentInfoRepository
+from service.student_info_service import StudentInfoService
+from controller.helpers.pdfTools import create_pdf_from_files_and_doc
 decan = Blueprint('decan', __name__)
 
 
-def modify_conventie_input(conventie, nume):
+def modify_conventie_input(conventie):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
     content = conventie.get_content()
     replaced_content = ""
-
+    from datetime import date, datetime
     from io import StringIO
     s = StringIO(content)
     for line in s:
-        # line = line.replace("SupervisorFunction Function", "SupervisorFunction " + nume)
+        line = line.replace("SignUniversityDate Date", "SignUniversityDate " + str(date.today()))
         replaced_content = replaced_content + line
 
     conventie.set_content(replaced_content)
@@ -31,31 +33,39 @@ def modify_conventie_input(conventie, nume):
 @decan.route('/conventie_decan', methods=["POST", "GET"])
 def conventie():
     if request.method == "POST":
+        repoStudInf = StudentInfoRepository()
+        servStudInf = StudentInfoService(repoStudInf)
 
         conventieRepo = ConventieRepository()
         conventieService = ConventieService(conventieRepo)
         conventii = conventieService.getAll()
         conventieDeModificat = None
-
+        numeStudenti = []
         for conventie in conventii:
             if conventie.get_completedByStudent() == True and conventie.get_completedByFirmaResponsabil() == True and conventie.get_completedByFirmaTutori() == True and conventie.get_completedByCadruDidacticSupervizor() == True and conventie.get_completedByDecan() == False:
                 conventieDeModificat = conventie
-                break
+                modify_conventie_input(conventieDeModificat)
+                infoStud = servStudInf.getOne(conventie.get_id())
+                numeStud=infoStud.name
+                numeStudenti.append(numeStud)
+                mailSubject = infoStud.specialization +","+infoStud.name +",2021,"+"C"  #sectie nume promotie tipdoc(A,C,R,E)
+                file_name= infoStud.name+"Conventie.pdf"
+                create_pdf_from_files_and_doc("ConventiePractica.pdf", file_name, conventieDeModificat,mailSubject)
+
 
         if conventieDeModificat == None:
-            print("Nu s-a gasit o conventie de modificat")
+            print("Nu s-au gasit conventii de modificat")
             return render_template("decan/conventieDecan.html")
 
-        # todo: put real data from forms
-        # numeFirma = request.form["numeFirma"]
-        nume = "DECAN"
+        mesaj = "Ati semnat cu succes conventiile urmatorilor studenti: "
+        for nume in numeStudenti:
+            mesaj = mesaj + str(nume) + "; "
+        flash(mesaj)
 
-        modify_conventie_input(conventieDeModificat, nume)
 
-        from controller.helpers.pdfTools import create_pdf_from_files_and_doc
-        create_pdf_from_files_and_doc("ConventiePractica.pdf", "output.pdf", conventieDeModificat)
 
-        return render_template("decan/conventieDecan.html")
+
+        return render_template("decan/homeDecan.html")
     else:
         return render_template("decan/conventieDecan.html")
 

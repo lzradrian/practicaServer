@@ -14,8 +14,11 @@ class CompanyInfo(db.Model):
     bank = db.Column("bank", db.String)
     iban = db.Column("IBAN", db.String)
     legalRepresentative = db.Column("legalRepresentative", db.String)
+    legalRepresentativeFunction = db.Column("legalRepresentativeFunction",db.String)
+    email = db.Column("email",db.String)
+    adresaStagiuPractica = db.Column("adresaStagiuPractica",db.String)
 
-    def __init__(self, idRepres, nameRepres, name, city, street, nr, phone, fax, fiscal, bank, iban):
+    def __init__(self, idRepres, nameRepres, name, city, street, nr, phone, fax, fiscal, bank, iban, represFunction,email,adresaPractica):
         self._id = idRepres
         self.name = name
         self.city = city
@@ -27,6 +30,9 @@ class CompanyInfo(db.Model):
         self.bank = bank
         self.iban = iban
         self.legalRepresentative = nameRepres
+        self.legalRepresentativeFunction = represFunction
+        self.email=email
+        self.adresaStagiuPractica=adresaPractica
 
     def set_id(self, value):
         self._id = value
