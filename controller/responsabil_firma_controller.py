@@ -38,7 +38,7 @@ def modify_conventie_input(conventie, firm, city, street, number, phone, fax, em
     from io import StringIO
     s = StringIO(content)
     for line in s:
-        # todo: rezolve signature
+
         line = line.replace("CompanyName Name", "CompanyName " + firm)
         line = line.replace("CompanyCity City", "CompanyCity " + city)
         line = line.replace("CompanyStreet Street", "CompanyStreet  " + street)
@@ -86,6 +86,8 @@ def modify_conventie_input(conventie, firm, city, street, number, phone, fax, em
             line = "ProjectName "+projectName + "\n"
         if "ProjectName" in line and projectName == "-":
             line = ""
+        if "ReprezentantSignature" in line:
+            line = "ReprezentantSignature " + signature +"\n"
         line = line.replace("ProjectName None", "ProjectName " +projectName)
         #art14 done
         line = line.replace("ConventionSignDate Date", "ConventionSignDate " + date)
@@ -149,29 +151,21 @@ def conventie():
 
     if request.method == "POST":
         info = companyInfoServ.getOne(session["id"])
-        firm = info.name #firm = request.form["firm"]
-        city = info.city#city = request.form["city"]
-        street = info.street#street = request.form["street"]
-        number = info.streetNo#number = request.form["number"]
-        phone = info.phone#phone = request.form["phone"]
-        fax=info.fax#fax = request.form["fax"]
-        email=info.email #email = request.form["email"]
-        code=info.fiscalCode#code = request.form["code"]
-        account = info.iban#account = request.form["account"]
-        banca = info.bank#banca = request.form["banca"]
-        representative = info.legalRepresentative#representative = request.form["representative"]
-        function = info.legalRepresentativeFunction#function = request.form["function"]
-        address=info.adresaStagiuPractica#address = request.form["address"]
-
-        startInternshipDate=str(internship.start_date) #startInternshipDate = request.form["startInternshipDate"]
-        endInternshipDate = str(internship.end_date)#endInternshipDate = request.form["endInternshipDate"]
-        #tutor = request.form["tutor"]
-        #tutorfunction = request.form["tutorfunction"]
-        #tutorphone = request.form["tutorphone"]
-        #tutorfax = request.form["tutorfax"]
-        #tutormail = request.form["tutormail"]
-
-
+        firm = info.name
+        city = info.city
+        street = info.street
+        number = info.streetNo
+        phone = info.phone
+        fax=info.fax
+        email=info.email
+        code=info.fiscalCode
+        account = info.iban
+        banca = info.bank
+        representative = info.legalRepresentative
+        function = info.legalRepresentativeFunction
+        address=info.adresaStagiuPractica
+        startInternshipDate=str(internship.start_date)
+        endInternshipDate = str(internship.end_date)
         awardsGranted = internship.awards
         rewardsGranted =internship.rewards
         otherConditions =internship.otherConditions
@@ -182,9 +176,7 @@ def conventie():
         woWorkContract =internship.noWorkContract
         EUFinanced = internship.EUFinanced
         projectBased = internship.projectBased
-
         projectName = internship.projectName
-
 
         date = str(date.today())
         signature = request.form["signature"]
@@ -201,7 +193,7 @@ def conventie():
             tutorphone = tutorInfo.phone
             tutorfax =tutorInfo.fax
             tutormail =tutorInfo.email
-            #print("AICI:",tutor,tutorfunction, tutorphone ,tutorfax ,tutormail)#OK
+
             modify_conventie_input(conventie, firm, city, street, number, phone, fax, email, code, account,
                                banca, representative,
                                function, address, hours, startInternshipDate, endInternshipDate, tutor,

@@ -2,6 +2,7 @@ from controller import db
 
 fields = [(), ]
 
+
 class ConventieInput(db.Model):
     __tablename__ = 'ConventieInput'
     _id = db.Column("id", db.Integer, primary_key=True, autoincrement=True)
@@ -11,6 +12,7 @@ class ConventieInput(db.Model):
     completedByFirmaTutori = db.Column("completedByFirmaTutori", db.BOOLEAN)
     completedByCadruDidacticSupervizor = db.Column("completedByCadruDidacticSupervizor", db.BOOLEAN)
     completedByDecan = db.Column("completedByDecan", db.BOOLEAN)
+    blobContent = db.Column("blobContent", db.BLOB)
 
     def __init__(self, id, content):
         self._id = id
@@ -26,6 +28,9 @@ class ConventieInput(db.Model):
 
     def set_content(self, value):
         self.content = value
+
+    def set_blobContent(self, val):
+        self.blobContent = val
 
     def set_completedByStudent(self, value):
         self.completedByStudent = value
@@ -47,6 +52,9 @@ class ConventieInput(db.Model):
 
     def get_content(self):
         return self.content
+
+    def get_blobContent(self):
+        return self.blobContent
 
     def get_completedByStudent(self):
         return self.completedByStudent

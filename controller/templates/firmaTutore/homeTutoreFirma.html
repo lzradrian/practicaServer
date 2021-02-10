@@ -22,7 +22,10 @@
 
 </head>
 <body>
-	<div>
+	<div class="sticky-top">
+		<a href="{{url_for('auth.logout')}}" class="btn btn-sm btn-danger"> Logout </a>
+	</div>
+	<div class="row justify-content-center mt-4">
 		{% with messages = get_flashed_messages() %}
 		{% if messages %}
 			{% for msg in messages %}
@@ -31,9 +34,7 @@
 		{% endif %}
 	{% endwith %}
 	</div>
-	<div class="sticky-top">
-		<a href="{{url_for('auth.logout')}}" class="btn btn-sm btn-danger"> Logout </a>
-	</div>
+
 
 	<div class="row justify-content-center mt-4">
 		<div class="card infoDiv">
@@ -47,14 +48,6 @@
 			</div>
 		</div>
 	</div>
-	<!--
-	<div class="documentDiv" style="height: 20%;top: 40%; left: 15%">
-		<h2>Acord de Practica</h2>
-		<form action="acordTutoreFirma.html" class="documentButtonForm" style="height: 30%">
-			<input class="documentButton" type="submit" name="tutoreFirmaAcordButton" value="Completeaza">
-		</form>
-	</div>
-	-->
 	<div class="row justify-content-center mt-4">
 		<div class="card infoDiv">
 			<div class="card-header">
@@ -73,8 +66,5 @@
 			<input class="documentButton" type="submit" name="tutoreFirmaEvaluareButton" value="Completeaza">
 		</form>
 	</div>
-	<form action="{{url_for('auth.logout')}}" class="logoutButtonForm">
-		<input class="documentButton" type="submit" name="tutoreFirmaLogoutButton" value="Logout">
-	</form>
 </body>
 </html>

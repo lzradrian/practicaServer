@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, flash, render_template, session, request, url_for, send_from_directory, Response
 
 from controller.helpers.authorize import verify_role, auth_required_with_role, get_home_route
-from controller.helpers.pdfTools import create_pdf_from_dic
+from controller.helpers.pdfTools import create_pdf_from_dic, create_pdf_from_files_and_doc
 from repository.conventie_repository import ConventieRepository
 from service.conventie_service import ConventieService
 from repository.student_info_repository import StudentInfoRepository
@@ -17,81 +17,61 @@ def create_conventie_input(name, country, city, street, number, apartment, count
     while dir_location[-1] != "\\":
         dir_location = dir_location[:-1]
     dir_location_input = dir_location[:-1] + "\\forms\\conventie_input.txt"
-
+    k = 0
     file = open(dir_location_input, "r")
     replaced_content = ""
     for line in file:
         line = line.strip()
-        # todo: rezolvarea diferentelor dintre input-ul din form si pdf (ex: signature etc)
-        if "StudentName" in line:
-            line = "StudentName " + name + "\n"
+        if "StudentName" in line and k==0:
+            k=k+1
+            line = "StudentName " + name
         if "StudentCity" in line:
-            line = "StudentCity " + city + "\n"
+            line = "StudentCity " + city
         if "StudentStreet" in line:
-            line = "StudentStreet " +street  + "\n"
+            line = "StudentStreet " +street
         if "StudentPNC" in line:
-            line = "StudentPNC " + cnp + "\n"
+            line = "StudentPNC " + cnp
         if "StudentDateOfBirth" in line:
-            line = "StudentDateOfBirth " + birthdate  + "\n"
+            line = "StudentDateOfBirth " + birthdate
         if "StudentPhone" in line:
-            line = "StudentPhone " +phone  + "\n"
+            line = "StudentPhone " +phone
         if "StudentEmail" in line:
-            line = "StudentEmail " +email  + "\n"
+            line = "StudentEmail " +email
         if "StudentCounty" in line:
-            line = "StudentCounty " + county + "\n"
+            line = "StudentCounty " + county
         if "StudentApartment" in line:
-            line = "StudentApartment " + apartment + "\n"
+            line = "StudentApartment " + apartment
         if "StudentStudyLine" in line:
-            line = "StudentStudyLine " + lineOfStudy + "\n"
+            line = "StudentStudyLine " + lineOfStudy
         if "StudentRole" in line:
-            line = "StudentRole " + function + "\n"
+            line = "StudentRole " + function
         if "StudentBirthLocation" in line:
-            line = "StudentBirthLocation " + birthcity + "\n"
+            line = "StudentBirthLocation " + birthcity
         if "StudentSpecialization" in line:
-            line = "StudentSpecialization " + specialty + "\n"
+            line = "StudentSpecialization " + specialty
         if "StudentNationality" in line:
-            line = "StudentNationality " + country + "\n"
+            line = "StudentNationality " + country
         if "StudentGroup" in line:
-            line = "StudentGroup " + group + "\n"
+            line = "StudentGroup " + group
         if "StudentYear" in line:
-            line = "StudentYear " + str(year) + "\n"
+            line = "StudentYear " + str(year)
         if "StudentICSeries" in line:
-            line = "StudentICSeries " + series + "\n"
+            line = "StudentICSeries " + series
         if "StudentStreetNo" in line:
-            line = "StudentStreetNo " + number + "\n"
+            line = "StudentStreetNo " + number
         if "StudentICNo" in line:
-            line = "StudentICNo " + id + "\n"
+            line = "StudentICNo " + id
         if "StudentNationality" in line:
-            line = "StudentNationality " + country + "\n"
-        if "SignStudentName" in line:
-            line = "SignStudentName " + name + "\n"
+            line = "StudentNationality " + country
         if "SignStudentDate" in line:
-            line = "SignStudentDate " + date + "\n"
-        '''
-        line = line.replace("StudentName Name", "StudentName " + name)
-        line = line.replace("StudentCity City", "StudentCity " + city)
-        line = line.replace("StudentStreet Street", "StudentStreet " + street)
-        line = line.replace("StudentPNC 123456789", "StudentPNC " + cnp)
-        line = line.replace("StudentDateOfBirth 1990.10.10", "StudentDateOfBirth " + birthdate)
-        line = line.replace("StudentPhone 123456789", "StudentPhone " + phone)
-        line = line.replace("StudentEmail Email", "StudentEmail " + email)
-        line = line.replace("StudentCounty County", "StudentCounty " + county)
-        line = line.replace("StudentApartment 10", "StudentApartment " + apartment)
-        line = line.replace("StudentStudyLine Line", "StudentStudyLine " + lineOfStudy)
-        line = line.replace("StudentRole Student", "StudentRole " + function)
-        line = line.replace("StudentBirthLocation Location", "StudentBirthLocation " + birthcity)
-        line = line.replace("StudentSpecialization Spec", "StudentSpecialization " + specialty)
-        line = line.replace("StudentNationality Nationality", "StudentNationality " + country)
-        line = line.replace("StudentGroup Group", "StudentGroup " + group)
-        line = line.replace("StudentYear Year", "StudentYear " + str(year))
-        line = line.replace("StudentICSeries 123", "StudentICSeries " + series)
-        line = line.replace("StudentStreetNo 123", "StudentStreetNo " + number)
-        line = line.replace("StudentICNo 123", "StudentICNo " + id)
-        line = line.replace("StudentNationality Nationality", "StudentNationality " + country)
-        line = line.replace("SignStudentName Name", "SignStudentName " + name)
-        line = line.replace("SignStudentDate Date", "SignStudentDate " + date)
-        '''
+            line = "SignStudentDate " + date
+        if "StudentSignature" in line:
+            line = "StudentSignature " + signature
+        if "SignStudentName" in line:
+            line = "SignStudentName "+name
         replaced_content = replaced_content + line + "\n"
+
+
     file.close()
 
     from domain.conventie_input import ConventieInput
@@ -100,12 +80,16 @@ def create_conventie_input(name, country, city, street, number, apartment, count
     conventie = ConventieInput(session["id"], replaced_content)
     conventie.set_completedByStudent(True)
     try:
-        flash("Ati modificat datele conventiei cu succes!")
+        #flash("Ati modificat datele conventiei cu succes!")
         conventieService.update(conventie)
     except:
         flash("Ati completat conventia cu succes!")
         conventieService.add(conventie)
-    # conventieService.add_or_update(conventie)
+
+    conv = conventieService.getOne(session["id"])
+    blobContent = create_pdf_from_files_and_doc("ConventiePractica.pdf", "conventie.pdf", conv,None)
+    conv.set_blobContent(blobContent)
+    conventieService.update(conv)
 
 
 @student.route("/student_conventie", methods=["POST", "GET"])
@@ -139,7 +123,7 @@ def conventie():
             birthdate = request.form["birthdate"]
             birthcity = request.form["birthlocation"]
             date = str(date.today())
-            signature = request.form["signature"] #todo: nefolosit ulterior
+            signature = request.form["signature"]
         except:
             flash("Cel putin un camp nu este completat!")
             return redirect(url_for("student_conventie.home"))
@@ -160,6 +144,21 @@ def conventie():
             flash("Completati datele generale inainte de completarea conventiei!")
             #return render_template("student/homeStudent.html")
             return redirect(url_for("student.home"))
+
+
+@student.route('/download_conventie', methods=["GET"])
+def download_conventie():
+    conventieRepo = ConventieRepository()
+    conventieService = ConventieService(conventieRepo)
+    try:
+        conventie = conventieService.getOne(session["id"])
+        content = conventie.get_blobContent()
+
+        return Response(content, mimetype="application/pdf",
+                        headers={"Content-disposition": "attachment; " "filename=conventie.pdf"})
+    except:
+        flash("Completati mai intai conventia!")
+        return redirect(url_for("student.home"))
 
 
 

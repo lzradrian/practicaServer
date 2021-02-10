@@ -24,12 +24,12 @@ def modify_conventie_input(conventie, name, function, signature):
     s = StringIO(content)
     for line in s:
         if "AcknowledgementTutorName" in line:
-            line = "AcknowledgementTutorName " + name + "\n"
+            line = "AcknowledgementTutorName " + name
         if "AcknowledgementSupervisorFunction" in line:
-            line = "AcknowledgementSupervisorFunction " + function + "\n"
-
-        # todo: replace signature (did not find in conventie_input.txt)
-        replaced_content = replaced_content + line
+            line = "AcknowledgementSupervisorFunction " + function
+        if "TutorSignature" in line:
+            line = "TutorSignature "+ signature
+        replaced_content = replaced_content + line +"\n"
     print(conventie.get_content())
     conventie.set_content(replaced_content)
     conventie.set_completedByFirmaTutori(True)
@@ -37,6 +37,8 @@ def modify_conventie_input(conventie, name, function, signature):
     conventieRepo = ConventieRepository()
     conventieService = ConventieService(conventieRepo)
     conventieService.update(conventie)
+
+
 
 
 @tutore_firma.route('/conventie_tutore_firma', methods=["POST", "GET"])

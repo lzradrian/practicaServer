@@ -9,7 +9,7 @@ from controller.helpers.pdfTools import create_pdf_from_files_and_doc
 decan = Blueprint('decan', __name__)
 
 
-def modify_conventie_input(conventie):
+def modify_conventie_input(conventie,signature):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
@@ -20,6 +20,8 @@ def modify_conventie_input(conventie):
     s = StringIO(content)
     for line in s:
         line = line.replace("SignUniversityDate Date", "SignUniversityDate " + str(date.today()))
+        if "DecanSignature" in line:
+            line= "DecanSignature "+signature+"\n"
         replaced_content = replaced_content + line
 
     conventie.set_content(replaced_content)
@@ -29,22 +31,28 @@ def modify_conventie_input(conventie):
     conventieService = ConventieService(conventieRepo)
     conventieService.update(conventie)
 
+    return conventie
 
 @decan.route('/conventie_decan', methods=["POST", "GET"])
 def conventie():
-    if request.method == "POST":
-        repoStudInf = StudentInfoRepository()
-        servStudInf = StudentInfoService(repoStudInf)
+    repoStudInf = StudentInfoRepository()
+    servStudInf = StudentInfoService(repoStudInf)
 
-        conventieRepo = ConventieRepository()
-        conventieService = ConventieService(conventieRepo)
-        conventii = conventieService.getAll()
-        conventieDeModificat = None
-        numeStudenti = []
-        for conventie in conventii:
-            if conventie.get_completedByStudent() == True and conventie.get_completedByFirmaResponsabil() == True and conventie.get_completedByFirmaTutori() == True and conventie.get_completedByCadruDidacticSupervizor() == True and conventie.get_completedByDecan() == False:
+    conventieRepo = ConventieRepository()
+    conventieService = ConventieService(conventieRepo)
+    conventii = conventieService.getAll()
+    conventiiDeModificat =[]
+    numeStudenti = []
+
+    for conventie in conventii:
+        if conventie.get_completedByStudent() == True and conventie.get_completedByFirmaResponsabil() == True and conventie.get_completedByFirmaTutori() == True and conventie.get_completedByCadruDidacticSupervizor() == True and conventie.get_completedByDecan() == False:
+            conventiiDeModificat.append(conventie)
+    if request.method == "POST":
+        signature = request.form["signature"]
+
+        for conventie in conventiiDeModificat:
                 conventieDeModificat = conventie
-                modify_conventie_input(conventieDeModificat)
+                conventieDeModificat = modify_conventie_input(conventieDeModificat,signature)
                 infoStud = servStudInf.getOne(conventie.get_id())
                 numeStud=infoStud.name
                 numeStudenti.append(numeStud)
@@ -52,21 +60,17 @@ def conventie():
                 file_name= infoStud.name+"Conventie.pdf"
                 create_pdf_from_files_and_doc("ConventiePractica.pdf", file_name, conventieDeModificat,mailSubject)
 
-
-        if conventieDeModificat == None:
-            print("Nu s-au gasit conventii de modificat")
-            return render_template("decan/conventieDecan.html")
-
         mesaj = "Ati semnat cu succes conventiile urmatorilor studenti: "
         for nume in numeStudenti:
             mesaj = mesaj + str(nume) + "; "
         flash(mesaj)
 
-
-
-
         return render_template("decan/homeDecan.html")
     else:
+        if len(conventiiDeModificat)==0:
+            flash("Nu s-au gasit conventii de modificat")
+            return render_template("decan/homeDecan.html")
+
         return render_template("decan/conventieDecan.html")
 
 

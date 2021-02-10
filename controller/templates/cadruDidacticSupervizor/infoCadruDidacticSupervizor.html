@@ -24,23 +24,25 @@
 <div class="documentDiv row justify-content-center text-center">
 		<div class="col-md-3" style="font-size:13px; font-weight:bold;">
 		<h2>Date Generale</h2><br>
-		{% with messages = get_flashed_messages() %}
-		{% if messages %}
-			{% for msg in messages %}
-				<p>{{msg}}</p>
-			{% endfor %}
-		{% endif %}
-	{% endwith %}
-		<form action="{{ url_for('cadru_didactic_supervizor.cadru_didactic_supervizor_info') }}" method="post">
+		<form action="{{ url_for('cadru_didactic_supervizor.info') }}" method="post">
 
 			<label for="name">Nume si Prenume:</label><br>
 			<input type="text" id="name" name="name" class="form-control"><br><br>
 
             <label for="specialization">Specialization:</label><br>
-			<select id="specialization">
-                <option value="Informatica">Informatica</option>
+			<select id="specialization" class="form-control" name="specialization">
+                <option value="Informatica" >Informatica</option>
                 <option value="Matematica-Informatica">Matematica Informatica</option>
-            </select>
+            </select><br>
+
+			<label for="email">Email:</label><br>
+			<input type="text" id="email" name="email" class="form-control"><br><br>
+
+			<label for="phone">Phone:</label><br>
+			<input type="text" id="phone" name="phone" class="form-control"><br><br>
+
+			<label for="fax">Fax:</label><br>
+			<input type="text" id="fax" name="fax" class="form-control"><br><br>
 
             <input type="submit" class="btn btn-primary btn-sm" value="Completeaza">
 		</form>
