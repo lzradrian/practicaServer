@@ -64,3 +64,8 @@ AcknowledgementSupervisorFunction Function
 AcknowledgementTutorFunction Function
 AcknowledgementTutorDate Date
 StudentRole Student
+DecanSignature x
+ReprezentantSignature x
+StudentSignature x
+SupervisorSignature x
+TutorSignature x

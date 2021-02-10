@@ -6,5 +6,6 @@ fields = {
     "DeclarationInternshipPeriod": 0,
     "DeclarationSignDate": 0,
     "HomeAddress": 0,
-    "CoordonatorName": 0
+    "CoordonatorName": 0,
+    "Signature": 0
 }

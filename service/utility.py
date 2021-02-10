@@ -54,6 +54,13 @@ def get_declaratie_firma_service():
     return DeclaratieFirmaService(repo)
 
 
+def get_declaratie_traseu_service():
+    from repository.declaratie_traseu_repository import DeclaratieTraseuRepository
+    from service.declaratie_traseu_service import DeclaratieTraseuService
+    repo = DeclaratieTraseuRepository()
+    return DeclaratieTraseuService(repo)
+
+
 def get_supervisor_info_service():
     from repository.supervisor_info_repository import SupervisorInfoRepository
     from service.supervisor_info_service import SupervisorInfoService
