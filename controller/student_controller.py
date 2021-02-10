@@ -23,6 +23,51 @@ def create_conventie_input(name, country, city, street, number, apartment, count
     for line in file:
         line = line.strip()
         # todo: rezolvarea diferentelor dintre input-ul din form si pdf (ex: signature etc)
+        if "StudentName" in line:
+            line = "StudentName " + name + "\n"
+        if "StudentCity" in line:
+            line = "StudentCity " + city + "\n"
+        if "StudentStreet" in line:
+            line = "StudentStreet " +street  + "\n"
+        if "StudentPNC" in line:
+            line = "StudentPNC " + cnp + "\n"
+        if "StudentDateOfBirth" in line:
+            line = "StudentDateOfBirth " + birthdate  + "\n"
+        if "StudentPhone" in line:
+            line = "StudentPhone " +phone  + "\n"
+        if "StudentEmail" in line:
+            line = "StudentEmail " +email  + "\n"
+        if "StudentCounty" in line:
+            line = "StudentCounty " + county + "\n"
+        if "StudentApartment" in line:
+            line = "StudentApartment " + apartment + "\n"
+        if "StudentStudyLine" in line:
+            line = "StudentStudyLine " + lineOfStudy + "\n"
+        if "StudentRole" in line:
+            line = "StudentRole " + function + "\n"
+        if "StudentBirthLocation" in line:
+            line = "StudentBirthLocation " + birthcity + "\n"
+        if "StudentSpecialization" in line:
+            line = "StudentSpecialization " + specialty + "\n"
+        if "StudentNationality" in line:
+            line = "StudentNationality " + country + "\n"
+        if "StudentGroup" in line:
+            line = "StudentGroup " + group + "\n"
+        if "StudentYear" in line:
+            line = "StudentYear " + str(year) + "\n"
+        if "StudentICSeries" in line:
+            line = "StudentICSeries " + series + "\n"
+        if "StudentStreetNo" in line:
+            line = "StudentStreetNo " + number + "\n"
+        if "StudentICNo" in line:
+            line = "StudentICNo " + id + "\n"
+        if "StudentNationality" in line:
+            line = "StudentNationality " + country + "\n"
+        if "SignStudentName" in line:
+            line = "SignStudentName " + name + "\n"
+        if "SignStudentDate" in line:
+            line = "SignStudentDate " + date + "\n"
+        '''
         line = line.replace("StudentName Name", "StudentName " + name)
         line = line.replace("StudentCity City", "StudentCity " + city)
         line = line.replace("StudentStreet Street", "StudentStreet " + street)
@@ -45,7 +90,7 @@ def create_conventie_input(name, country, city, street, number, apartment, count
         line = line.replace("StudentNationality Nationality", "StudentNationality " + country)
         line = line.replace("SignStudentName Name", "SignStudentName " + name)
         line = line.replace("SignStudentDate Date", "SignStudentDate " + date)
-
+        '''
         replaced_content = replaced_content + line + "\n"
     file.close()
 

@@ -23,9 +23,11 @@ def modify_conventie_input(conventie, name, function, signature):
     from io import StringIO
     s = StringIO(content)
     for line in s:
-        line = line.replace("AcknowledgementTutorName Name", "AcknowledgementTutorName " + name)
-        line = line.replace("AcknowledgementSupervisorFunction Function",
-                            "AcknowledgementSupervisorFunction " + function)
+        if "AcknowledgementTutorName" in line:
+            line = "AcknowledgementTutorName " + name + "\n"
+        if "AcknowledgementSupervisorFunction" in line:
+            line = "AcknowledgementSupervisorFunction " + function + "\n"
+
         # todo: replace signature (did not find in conventie_input.txt)
         replaced_content = replaced_content + line
     print(conventie.get_content())
@@ -35,7 +37,6 @@ def modify_conventie_input(conventie, name, function, signature):
     conventieRepo = ConventieRepository()
     conventieService = ConventieService(conventieRepo)
     conventieService.update(conventie)
-
 
 
 @tutore_firma.route('/conventie_tutore_firma', methods=["POST", "GET"])
@@ -65,12 +66,10 @@ def conventie():
         tutorfunction = info.function
         signature = request.form["signature"]
 
-
         repoStudInf = StudentInfoRepository()
         servStudInf = StudentInfoService(repoStudInf)
         numeStudenti = []
         for conventie in conventiiDeModificat:
-
             modify_conventie_input(conventie, tutorname, tutorfunction, signature)
             numeStudenti.append(servStudInf.getOne(conventie.get_id()).name)
         mesaj = "Ati modificat cu succes conventiile urmatorilor studenti: "
