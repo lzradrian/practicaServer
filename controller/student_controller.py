@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, flash, render_template, session, request, url_for, send_from_directory
+from flask import Blueprint, redirect, flash, render_template, session, request, url_for, send_from_directory, Response
 
 from controller.helpers.authorize import verify_role, auth_required_with_role, get_home_route
 from controller.helpers.pdfTools import create_pdf_from_dic
@@ -145,7 +145,7 @@ def student_company_declaration():
         date = str(date.today())
         params = [info.name, info.group, info.specialization, info.year,
                   request.form["interval"], date, request.form["address"],
-                  request.form["firm"], request.form["coordinator"]]
+                  request.form["firm"], request.form["coordinator"], request.form["signature"]]
         pair_input = dict(zip(fields.keys(), params))
         content = create_pdf_from_dic("DeclaratieActivitateFirma.pdf", "DeclaratieActivitateFirma-" + info.name + ".pdf", pair_input)
         try:
@@ -173,10 +173,6 @@ def student_uni_declaration():
     except ValueError:
         pass
 
-    if already_completed:
-        declaratie = declaratie_service.get_with_student_id(session["id"])
-        fields = get_fields_from_pdf(declaratie.content)
-
     if request.method == "POST":
         from repository.student_info_repository import StudentInfoRepository
         from service.student_info_service import StudentInfoService
@@ -195,7 +191,7 @@ def student_uni_declaration():
         date = str(date.today())
         params = [info.name, info.group, info.specialization, info.year,
                   request.form["interval"], date, request.form["address"],
-                  request.form["coordinator"]]
+                  request.form["coordinator"], request.form["signature"]]
         pair_input = dict(zip(fields.keys(), params))
         content = create_pdf_from_dic("DeclaratieActivitateUBB.pdf","DeclaratieActivitateUBB-" + info.name + ".pdf", pair_input)
 
@@ -346,17 +342,38 @@ def raport():
 
 @student.route('/download_declaratie_ubb', methods=["GET"])
 def download_declaratie_ubb():
-    pass
+    from service.utility import get_declaratie_ubb_service
+
+    service = get_declaratie_ubb_service()
+    doc = service.get_with_student_id(session["id"])
+    content = doc.content
+
+    return Response(content, mimetype="application/pdf", headers={"Content-disposition": "attachment; "
+                                                                                         "filename=declaratie.pdf"})
 
 
 @student.route('/download_declaratie_firma', methods=["GET"])
-def download_declaratie_ubb():
-    pass
+def download_declaratie_firma():
+    from service.utility import get_declaratie_firma_service
+
+    service = get_declaratie_firma_service()
+    doc = service.get_with_student_id(session["id"])
+    content = doc.content
+
+    return Response(content, mimetype="application/pdf", headers={"Content-disposition": "attachment; "
+                                                                                         "filename=declaratie.pdf"})
 
 
 @student.route('/download_declaratie_traseu', methods=["GET"])
-def download_declaratie_ubb():
-    pass
+def download_declaratie_traseu():
+    from service.utility import get_declaratie_traseu_service
+
+    service = get_declaratie_traseu_service()
+    doc = service.getOne(session["id"])
+    content = doc.content
+
+    return Response(content, mimetype="application/pdf", headers={"Content-disposition": "attachment; "
+                                                                                         "filename=declaratie.pdf"})
 
 
 @student.route('/download', methods=["GET", "POST"])
@@ -414,4 +431,7 @@ def download():
 def home():
     if verify_role(0) == 0:
         return  redirect(url_for(get_home_route()))
+
+    from service.utility import get_student_internship_service
+
     return render_template("student/homeStudent.html")

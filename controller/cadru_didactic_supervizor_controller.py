@@ -63,6 +63,20 @@ def conventie():
         return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
 
 
+@cadru_didactic_supervizor.route('/cadru_didactic_supervizor_info', methods=["GET", "POST"])
+def info():
+    if request.method == "POST":
+        from service.utility import get_supervisor_info_service
+        from domain.supervisor_info import SupervisorInfo
+
+        service = get_supervisor_info_service()
+
+        name = request.form["name"]
+        specialization = request.form["specialization"]
+
+        service.add(SupervisorInfo(session["id"], name, specialization))
+    return render_template("cadruDidacticSupervizor/infoCadruDidacticSupervizor.html")
+
 @cadru_didactic_supervizor.route('/cadru_didactic_supervizor', methods=["GET"])
 def home():
     if verify_role(5) == 0:
