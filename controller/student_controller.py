@@ -434,4 +434,13 @@ def home():
 
     from service.utility import get_student_internship_service
 
-    return render_template("student/homeStudent.html")
+    has_internship = False
+
+    service = get_student_internship_service()
+    try:
+        service.getOne(session["id"])
+        has_internship = True
+    except ValueError:
+        pass
+
+    return render_template("student/homeStudent.html", has_internship=has_internship)

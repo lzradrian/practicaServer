@@ -108,3 +108,37 @@ def get_fields_from_pdf(pdf_content):
     fields = _get_fields_from_pdf('temp_pdf.pdf')
     os.remove('temp_pdf.pdf')
     return fields
+
+
+def are_no_hours_valid(current_year, start_date, end_date, no_hours):
+    # current year - 2010
+    # start date - "10.10.2010"
+    # end date - "20.10.2010"
+    import numpy as np
+    import datetime as dt
+
+    vacation_multiplier = 8
+    college_multiplier = 2
+
+    college_start = dt.date(current_year, 10, 1)
+    college_end = dt.date(current_year + 1, 7, 1)
+
+    start = dt.date(start_date.split('-')[2], start_date.split('-')[1], start_date.split('-')[0])
+    end = dt.date(end_date.split('-')[2], end_date.split('-')[1], end_date.split('-')[0])
+
+    amount = 0
+
+    if start < college_start:
+        if end < college_start:
+            amount += np.busday_count(start, end) * vacation_multiplier
+        else:
+            amount += np.busday_count(start, college_start) * vacation_multiplier
+            amount += np.busday_count(college_start + 1, end) * college_multiplier
+    else:
+        if end < college_end:
+            amount += np.busday_count(start, end) * college_multiplier
+        else:
+            amount += np.busday_count(start, college_end) * college_multiplier
+            amount += np.busday_count(college_end + 1, end) * vacation_multiplier
+
+    return amount >= no_hours
