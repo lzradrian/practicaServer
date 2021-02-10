@@ -19,14 +19,43 @@
 	position: relative;
 }
 
+.logoutButtonForm {
+	height: 5%;
+	width: 15%;
+	margin-top: 0%;
+	position: absolute;
+}
+
+.radioLabel {
+	position: relative;
+	font-size: 20px;
+	text-align: left;
+	width: 40%;
+	left: 20%;
+}
+
+.radioInput {
+	position: relative;
+	width: 10%;
+	left: 20%;
+	float: left;
+}
+
+.radioTextInput {
+	width: 60%;
+	left: 20%;
+}
+
 h2 {
 	text-align: center;
 }
 
 label {
+	position: relative;
 	display: inline-block;
 	width: 60%;
-	text-align: right;
+	text-align: center;
+	left: 20%;
 	font-size: 20px;
 }
 
