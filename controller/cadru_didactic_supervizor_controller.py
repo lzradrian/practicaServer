@@ -60,7 +60,7 @@ def conventie():
     if request.method == "POST":
         info = supervizorService.getOne(session["id"])
         nume = info.name
-        functie= info.function
+        functie= info.specialization
         email=info.email
         phone=info.phone
         fax=info.fax
