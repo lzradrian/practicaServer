@@ -34,7 +34,7 @@ def modify_conventie_input(conventie, firm, city, street, number, phone, fax, em
     '''
     content = conventie.get_content()
     replaced_content = ""
-    print("AICI:",tutor,tutorfunction, tutorphone ,tutorfax ,tutormail)#OK
+
     from io import StringIO
     s = StringIO(content)
     for line in s:
@@ -66,12 +66,28 @@ def modify_conventie_input(conventie, firm, city, street, number, phone, fax, em
         line = line.replace("OtherConditions -", "OtherConditions " + otherConditions)
         # art12
         #art14
-        line = line.replace("WorkContract 1", "WorkContract " +workContract)
-        line = line.replace("NoWorkContract 0", "NoWorkContract " +noWorkContract)
-        line = line.replace("EUFinanced 0", "EUFinanced " +EUFinanced)
-        line = line.replace("ProjectBased 0", "ProjectBased " +projectBased)
+        if "WorkContract" in line and workContract=="1":
+            line = "WorkContract 1\n"
+        if "WorkContract" in line and workContract == "0":
+            line = ""
+        if "noWorkContract" in line and noWorkContract == "1":
+            line = "noWorkContract 1\n"
+        if "noWorkContract" in line and noWorkContract == "0":
+            line = ""
+        if "EUFinanced" in line and EUFinanced == "1":
+            line = "EUFinanced 1\n"
+        if "EUFinanced" in line and EUFinanced == "0":
+            line = ""
+        if "ProjectBased" in line and projectBased == "1":
+            line = "projectBased 1\n"
+        if "ProjectBased" in line and projectBased == "0":
+            line = ""
+        if "ProjectName" in line and projectName != "-":
+            line = "ProjectName "+projectName + "\n"
+        if "ProjectName" in line and projectName == "-":
+            line = ""
         line = line.replace("ProjectName None", "ProjectName " +projectName)
-        #art14
+        #art14 done
         line = line.replace("ConventionSignDate Date", "ConventionSignDate " + date)
         line = line.replace("SignRepresentativeName Name", "SignRepresentativeName " + representative)
         line = line.replace("SignRepresentativeDate Date", "SignRepresentativeDate " + date)
@@ -83,14 +99,14 @@ def modify_conventie_input(conventie, firm, city, street, number, phone, fax, em
         line = line.replace("AcknowledgementSupervisorDate Date", "AcknowledgementSupervisorDate " + date)
 
         replaced_content = replaced_content + line
-    print(replaced_content)
+    #print(replaced_content)
     conventie.set_content(replaced_content)
     conventie.set_completedByFirmaResponsabil(True)
 
     conventieRepo = ConventieRepository()
     conventieService = ConventieService(conventieRepo)
     conventieService.update(conventie)
-    print("\n\n\n",conventie.get_content())
+    #print("\n\n\n",conventie.get_content())
 
 
 @responsabil_firma.route('/conventie_responsabil_firma', methods=["POST", "GET"])
@@ -122,7 +138,9 @@ def conventie():
     #conventii = [] contine lista conventiilor ce tin de reprezentatul_firmei logat
     #urmeaza sa filtrez daca acestea au fost modificate de student
     conventiiDeModificat=[]
+
     for conventie in conventii:
+
         try:
             if conventie.get_completedByStudent() == True and conventie.get_completedByFirmaTutori() == True and conventie.get_completedByFirmaResponsabil() == False:
                     conventiiDeModificat.append(conventie)
@@ -153,15 +171,18 @@ def conventie():
         #tutorfax = request.form["tutorfax"]
         #tutormail = request.form["tutormail"]
 
-        #todo:get from internship
+
         awardsGranted = internship.awards
         rewardsGranted =internship.rewards
         otherConditions =internship.otherConditions
         hours = internship.hours
+
+        #au valori de 0, si unul singur are 1. Cele cu 0 nu trebuie adaugate in obiect
         workContract = internship.workContract
         woWorkContract =internship.noWorkContract
         EUFinanced = internship.EUFinanced
         projectBased = internship.projectBased
+
         projectName = internship.projectName
 
 
@@ -194,9 +215,7 @@ def conventie():
         return render_template("firmaResponsabil/homeResponsabilFirma.html")
     else:
         try:
-            #print("sesiune id resp firma:",session["id"])
             info = companyInfoServ.getAll()
-            #rint(info)
             if len(conventiiDeModificat) == 0:
                 flash("Nu sunt conventii de completat!")
                 return render_template("firmaResponsabil/homeResponsabilFirma.html")
@@ -305,8 +324,38 @@ def start_internship():
         start_date = datetime.strptime(request.form["start_date"], '%Y-%m-%d')
         end_date = datetime.strptime(request.form["end_date"], '%Y-%m-%d')
 
-        service.add(Internship(0, responsabil_id, year, start_date, end_date))
+        awardsGranted = request.form["awards"]
+        rewardsGranted = request.form["rewards"]
+        otherConditions = request.form["otherConditions"]
+        hours = request.form["hours"]
 
+        workContract ="0"
+        noWorkContract ="0"
+        EUFinanced ="0"
+        projectBased="0"
+        projectName="-"
+
+        option = request.form['grup']
+
+
+        if "workContract" == option:
+            workContract = "1"
+        if "noWorkContract" == option:
+            noWorkContract = "1"
+        if "EUFinanced" == option:
+            EUFinanced = "1"
+        if "projectBased" == option:
+            projectBased = "1"
+            projectName = request.form['projectName']
+
+
+        print("workcontract: ",workContract)
+        print("noworkcontract: ", noWorkContract)
+        print("EUFinanced",EUFinanced)
+        print("projectBased", projectBased)
+        #service.add(Internship(0, responsabil_id, year, start_date, end_date))
+        service.add(Internship(responsabil_id,year,start_date,end_date,awardsGranted,
+                               rewardsGranted,otherConditions,workContract,noWorkContract,EUFinanced,projectBased,projectName,hours))
     return render_template("firmaResponsabil/practicaResponsabilFirma.html")
 
 def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, companyStreet, companyStreetNo,

@@ -60,7 +60,7 @@ def conventie():
     if request.method == "POST":
         info = supervizorService.getOne(session["id"])
         nume = info.name
-        functie= info.function
+        functie= info.specialization
         email=info.email
         phone=info.phone
         fax=info.fax
@@ -82,6 +82,20 @@ def conventie():
     else:
         return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
 
+
+@cadru_didactic_supervizor.route('/cadru_didactic_supervizor_info', methods=["GET", "POST"])
+def info():
+    if request.method == "POST":
+        from service.utility import get_supervisor_info_service
+        from domain.supervisor_info import SupervisorInfo
+
+        service = get_supervisor_info_service()
+
+        name = request.form["name"]
+        specialization = request.form["specialization"]
+
+        service.add(SupervisorInfo(session["id"], name, specialization))
+    return render_template("cadruDidacticSupervizor/infoCadruDidacticSupervizor.html")
 
 @cadru_didactic_supervizor.route('/cadru_didactic_supervizor', methods=["GET"])
 def home():

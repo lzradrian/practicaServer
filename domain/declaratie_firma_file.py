@@ -9,6 +9,7 @@ fields = {
     "DeclarationSignDate": 0,
     "HomeAddress": 0,
     "CompanyName": 0,
-    "CoordonatorName": 0
+    "CoordonatorName": 0,
+    "Signature": 0
 }
 

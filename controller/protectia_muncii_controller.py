@@ -7,12 +7,13 @@ protectia_muncii = Blueprint('protectia_muncii', __name__)
 
 def get_students_with_documents():
     from service.utility import get_user_service, get_student_info_service,\
-        get_declaratie_ubb_service, get_declaratie_firma_service
+        get_declaratie_ubb_service, get_declaratie_firma_service, get_declaratie_traseu_service
 
     user_service = get_user_service()
     student_info_service = get_student_info_service()
     declaratie_ubb_service = get_declaratie_ubb_service()
     declaratie_firma_service = get_declaratie_firma_service()
+    declaratie_traseu_service = get_declaratie_traseu_service()
 
     students = user_service.filter_by_role(0)
 
@@ -30,14 +31,22 @@ def get_students_with_documents():
                     document_type = "Firma"
                     data.append((si.name, si.group, si.year, document_type, document.submitted, document.checked, ("Firma", document.id), len(data)))
                 except ValueError:
-                    pass
+                    try:
+                        document = declaratie_traseu_service.getOne(s.id)
+                        document_type = "Traseu"
+                        data.append((si.name, si.group, si.year, document_type, document.submitted, document.checked,
+                                     ("Traseu", document.student_id), len(data)))
+                    except ValueError:
+                        pass
         except ValueError:
             continue
     return tuple(data)
 
+
 @protectia_muncii.route('/download/<doc_type>&<doc_id>')
 def download(doc_type, doc_id):
-    from service.utility import get_declaratie_ubb_service, get_declaratie_firma_service
+    from service.utility import get_declaratie_ubb_service, get_declaratie_firma_service,\
+        get_declaratie_traseu_service
     content = None
     if doc_type == "UBB":
         service = get_declaratie_ubb_service()
@@ -47,13 +56,18 @@ def download(doc_type, doc_id):
         service = get_declaratie_firma_service()
         doc = service.getOne(int(doc_id))
         content = doc.content
+    else:
+        service = get_declaratie_traseu_service()
+        doc = service.getOne(int(doc_id))
+        content = doc.content
 
     return Response(content, mimetype="application/pdf", headers={"Content-disposition": "attachment; "
                                                                                          "filename=declaratie.pdf"})
 
 @protectia_muncii.route('/validate/<doc_idx>')
 def validate(doc_idx):
-    from service.utility import get_declaratie_ubb_service, get_declaratie_firma_service
+    from service.utility import get_declaratie_ubb_service, get_declaratie_firma_service,\
+        get_declaratie_traseu_service
     data = get_students_with_documents()
     headings = (("Nume", "Grupa", "An", "Tip document", "Data incarcarii", "Status", "Document"))
     doc = data[int(doc_idx)]
@@ -66,6 +80,11 @@ def validate(doc_idx):
         service.update(doc_file)
     elif doc_type == "Firma":
         service = get_declaratie_firma_service()
+        doc_file = service.getOne(doc_id)
+        doc_file.checked = True
+        service.update(doc_file)
+    elif doc_type == "Traseu":
+        service = get_declaratie_traseu_service()
         doc_file = service.getOne(doc_id)
         doc_file.checked = True
         service.update(doc_file)

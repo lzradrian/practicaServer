@@ -30,6 +30,16 @@
 			{% endfor %}
 		{% endif %}
 	{% endwith %}
+	<div class="documentDiv" style="height: 20%;top: 40%; left: 35%">
+		<h2>Date generale</h2>
+		<form  action="{{ url_for('cadru_didactic_supervizor.info') }}" class="documentButtonForm" style="height: 30%">
+			<input class="documentButton" type="submit" name="tutoreFirmaConventieButton" value="Completeaza">
+		</form>
+		<h2>Conventie de Practica</h2>
+		<form  action="{{ url_for('cadru_didactic_supervizor.conventie') }}" class="documentButtonForm" style="height: 30%">
+			<input class="documentButton" type="submit" name="tutoreFirmaConventieButton" value="Completeaza">
+		</form>
+		<a href="{{url_for('auth.logout')}}"> Logout </a>
 	</div>
 	<div class="sticky-top">
 		<a href="{{url_for('auth.logout')}}" class="btn btn-sm btn-danger"> Logout </a>

@@ -10,10 +10,41 @@
 		<form action="{{ url_for('responsabil_firma.start_internship') }}" method="post" style="width: 100%">
 			<label for="year">An universitar:</label><br>
 			<input type="text" id="year" name="year"><br><br>
-            <label for="start_date">Start date</label><br>
+
+			<label for="hours">Durata practica, in ore:</label><br>
+			<input type="text" id="hours" name="hours"><br><br>
+
+            <label for="start_date">Inceperea perioadei de practica:</label><br>
 			<input type="text" id="start_date" name="start_date"><br><br>
-            <label for="end_date">End date</label><br>
+
+            <label for="end_date">Sfarsitul perioadei de practica:</label><br>
 			<input type="text" id="end_date" name="end_date"><br><br>
+
+			<label for="awards">Gratificari sau premii acordate, daca este cazul:</label><br>
+			<input type="text" id="awards" name="awards"><br><br>
+
+			<label for="rewards">Avantaje eventuale (plata transport, tichete de masa,etc), daca este
+				cazul: </label><br>
+			<input type="text" id="rewards" name="rewards"><br><br>
+
+			<label for="otherConditions">Alte conditii:</label><br>
+			<input type="text" id="otherConditions" name="otherConditions"><br><br><br>
+
+			Stagiul de pregatire practica:<br><br>
+			<label >
+				<input type="radio" id="workContract" name="grup" value="workContract"> Se efectueaza in cadrul unui contract de munca
+			</label><br>
+			<label>
+				<input type="radio" id="noWorkContract" name="grup" value="noWorkContract">Nu se efectueaza in cadrul unui contract de munca
+			</label><br>
+			<label>
+				<input type="radio" id="EUFinanced" name="grup" value="EUFinanced">Se efectueaza in cadrul unui proiect finantat din Fondul Social European
+			</label><br>
+			<label>
+				<input type="radio" id="projectBased" name="grup" value="projectBased">Se efectueaza in cadrul proiectului
+					<input type="text" id="projectName" name="projectName"><br><br>
+			</label><br>
+
 			<input type="submit" value="Completeaza">
 		</form>
 	</div>
