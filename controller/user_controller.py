@@ -12,7 +12,7 @@ userService = UserService(userRepo)
 
 @auth.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("user/login.html")
 
 @auth.route("/admin", methods=["POST", "GET"])
 def admin():
