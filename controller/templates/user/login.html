@@ -28,13 +28,16 @@
     <div class="row text-center justify-content-center mt-4">
         <div class="card col-md-3">
             <div class="card-header">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for msg in messages %}
-                        <p>{{msg}}</p>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+                <h5> Login </h5>
+                <div class="bg-danger container" style="color:white; ">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for msg in messages %}
+                                <p>{{msg}}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
             </div>
             <div class="card-body">
                 <form action="#" method="post" class="justify-content-center text-center">
@@ -46,7 +49,7 @@
                 </form>
 
                 <div>
-                    <form action="/new">
+                    <form action="/register">
                         <label>New here?</label><br>
                         <input class="btn btn-warning btn-sm" value="Register" type="submit">
                     </form>
