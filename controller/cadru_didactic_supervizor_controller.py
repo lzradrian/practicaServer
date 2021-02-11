@@ -100,7 +100,11 @@ def info():
         fax=request.form["fax"]
         phone =request.form["phone"]
 
-        service.add(SupervisorInfo(session["id"], name, specialization,email,phone,fax))
+        try:
+            service.add(SupervisorInfo(session["id"], name, specialization,email,phone,fax))
+        except:
+            service.update(SupervisorInfo(session["id"], name, specialization,email,phone,fax))
+
         flash("Ati completat cu succes datele!")
         return render_template("cadruDidacticSupervizor/homeCadruDidacticSupervizor.html")
     else:#GET

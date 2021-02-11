@@ -352,7 +352,8 @@ def start_internship():
 
 def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, companyStreet, companyStreetNo,
                  companyPhone, fax, companyFiscalCode, companyBank, companyIBAN, companyLegalRepresentative,
-                 nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2):
+                 nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2,
+                 signature):
     import os
     dir_location = os.getcwd()
     while dir_location[-1] != "\\":
@@ -364,7 +365,6 @@ def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, 
 
     for line in file:
         line = line.strip()
-        # todo: rezolve signature
         line = line.replace("AccordYear 2020-2021", "AccordYear " + accordYear)
         line = line.replace("InternshipLenghtDays 50", "InternshipLenghtDays " + noHours)  # hours
         line = line.replace("AccordSignDate 10.10.2020", "AccordSignDate  " + accordSignDate)
@@ -386,6 +386,7 @@ def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, 
         line = line.replace("Specialization2 Matematica-Informatica", "Specialization2 " + specialization2)
         line = line.replace("Faculty2 Matematica-Informatica", "Faculty2 " + faculty2)
         line = line.replace("Faculty1 Matematica-Informatica", "Faculty1 " + faculty1)
+        line = line.replace("ReprezentantSignature x", "ReprezentantSignature " + signature)
 
         replaced_content = replaced_content + line + "\n"
     file.close()
@@ -398,8 +399,8 @@ def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, 
 
     acordServ.add(acord)
 
-    from controller.helpers.pdfTools import create_pdf_from_files_and_doc
-    create_pdf_from_files_and_doc("AcordPractica.pdf", "output.pdf", acord)
+    #from controller.helpers.pdfTools import create_pdf_from_files_and_doc
+    #create_pdf_from_files_and_doc("AcordPractica.pdf", "output.pdf", acord)
 
 
 @responsabil_firma.route('/acord_responsabil_firma', methods=["POST", "GET"])
@@ -437,17 +438,21 @@ def acord():
         faculty2 = request.form["Faculty2"]
         faculty1 = request.form["Faculty1"]
 
+        signature = request.form["signature"]
         create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, companyStreet, companyStreetNo,
                      companyPhone, fax, companyFiscalCode, companyBank, companyIBAN, companyLegalRepresentative,
-                     nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2)
+                     nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2,
+                     signature)
 
-        return render_template("firmaResponsabil/acordResponsabilFirma.html")
+        flash("Ati completat cu succes acordul!")
+        return render_template("firmaResponsabil/homeResponsabilFirma.html")
     else:
         try:
             company = serviceComp.getOne(idOfCurrentUser)
         except:
             flash("Trebuie sa introduceti mai intai datele firmei.")
             return redirect(url_for("responsabil_firma.home"))
+
         return render_template("firmaResponsabil/acordResponsabilFirma.html")
 
 
@@ -471,10 +476,14 @@ def date_firma():
         companyIBAN = request.form["CompanyIBAN"]
         companyLegalRepresentative = request.form["CompanyLegalRepresentative"]
 
+        companyLRFunction = request.form["CompanyLegalRepresentativeFunction"]
+        companyEmail = request.form ["CompanyEmail"]
+        adresaPractica = request.form["AdresaPractica"]
         from domain.company_info import CompanyInfo
         companyInfo = CompanyInfo(idOfCurrentUser, companyLegalRepresentative, companyName, companyCity, companyStreet,
                                   companyStreetNo, companyPhone, companyFax
-                                  , companyFiscalCode, companyBank, companyIBAN)
+                                  , companyFiscalCode, companyBank, companyIBAN,companyLRFunction,
+                                  companyEmail,adresaPractica)
         repoComp = CompanyInfoRepository()
         serviceComp = CompanyInfoService(repoComp)
         try:

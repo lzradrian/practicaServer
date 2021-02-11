@@ -9,6 +9,7 @@ class AcordPractica(db.Model):
     completedByDepJuridicUBB = db.Column("completedByDepJuridicUBB", db.BOOLEAN)
 
     def __init__(self, content):
+
         self.content = content
         self.completedByFirmaReprezentant = False
         self.completedByDepJuridicUBB = False
@@ -23,7 +24,7 @@ class AcordPractica(db.Model):
         self.completedByFirmaReprezentant = value
 
     def set_completedByDepJuridicUBB(self, value):
-        self.completedByFirmaReprezentant = value
+        self.completedByDepJuridicUBB = value
 
     def get_id(self):
         return self._id
@@ -35,4 +36,4 @@ class AcordPractica(db.Model):
         return self.completedByFirmaReprezentant
 
     def get_completedByDepJuridicUBB(self):
-        return self.completedByFirmaReprezentant
+        return self.completedByDepJuridicUBB

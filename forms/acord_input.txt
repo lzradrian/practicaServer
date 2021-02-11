@@ -18,3 +18,5 @@ Specialization2 Matematica-Informatica
 Faculty1 Matematica-Informatica
 Faculty2 Matematica-Informatica
 InternshipLengthDays 50
+ReprezentantSignature x
+RectorSignature x
