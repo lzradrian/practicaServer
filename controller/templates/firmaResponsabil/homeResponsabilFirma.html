@@ -22,18 +22,31 @@
 
 </head>
 <body>
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-{% for message in messages %}
-{{ message }}
-{% endfor %}
-{% endif %}
-{% endwith %}
-<div class="documentDiv" style="height: 20%;top: 40%; left: 35%">
-    <h2>Completare date generale firma</h2>
-    <form action="{{ url_for('responsabil_firma.date_firma') }}" class="documentButtonForm" style="height: 30%">
-        <input class="documentButton" name="tutoreFirmaConventieButton" type="submit" value="Completeaza">
-    </form>
+	<div class="sticky-top">
+		<a href="{{url_for('auth.logout')}}" class="btn btn-sm btn-danger"> Logout </a>
+	</div>
+	<div class="row justify-content-center mt-4">
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
+	{% for message in messages %}
+	{{ message }}
+	{% endfor %}
+	{% endif %}
+	{% endwith %}
+	</div>
+
+	<div class="row justify-content-center mt-4">
+		<div class="card infoDiv">
+			<div class="card-header">
+				<h2>Completare date generale firma</h2>
+			</div>
+			<div class="justify-content-center  text-center card-body">
+				<form action="{{ url_for('responsabil_firma.date_firma') }}" class="documentButtonForm">
+					<input type="submit" class="documentButton btn btn-primary" name="responsabil" value="Completeaza">
+				</form>
+			</div>
+		</div>
+	</div>
     <div class="row justify-content-center mt-4">
 		<div class="card infoDiv">
 			<div class="card-header">
@@ -46,10 +59,40 @@
 			</div>
 		</div>
 	</div>
-    <h2>Completare Acord</h2>
-    <form action="{{ url_for('responsabil_firma.acord') }}" class="documentButtonForm" style="height: 30%">
-        <input class="documentButton" name="tutoreFirmaAcordButton" type="submit" value="Completeaza">
-    </form>
+
+	<div class="row justify-content-center mt-4">
+		<div class="card infoDiv">
+			<div class="card-header">
+				<h2>Completare Acord</h2>
+			</div>
+			<div class="justify-content-center  text-center card-body">
+				<form action="{{ url_for('responsabil_firma.acord') }}" class="documentButtonForm">
+					<input type="submit" class="documentButton btn btn-primary" name="responsabil" value="Completeaza">
+				</form>
+			</div>
+		</div>
+	</div>
+
+<div class="row justify-content-center mt-4">
+		<div class="card infoDiv">
+			<div class="card-header">
+				<h2>Management practica {{ year }}</h2>
+			</div>
+			<div class="justify-content-center  text-center card-body">
+				{% if active == False %}
+				<form action="{{ url_for('responsabil_firma.start_internship') }}" class="documentButtonForm">
+					<input type="submit" class="documentButton btn btn-primary" name="responsabil" value="Completeaza">
+				</form>
+				{% else %}
+				<form  action="{{ url_for('responsabil_firma.management') }}" class="documentButtonForm" >
+				<input class="documentButton btn btn-primary" type="submit" name="tutoreFirmaConventieButton" value="Vizualizare studenti">
+				</form>
+				{% endif %}
+			</div>
+		</div>
+</div>
+
+	<!--
 	<h1>Management practica {{ year }}</h1>
 	<div class="managementDiv" style="height: 20%;top: 40%; left: 35%">
 		{% if active == False %}
@@ -62,7 +105,6 @@
 			</form>
 		{% endif %}
 	</div>
-    <a href="{{url_for('auth.logout')}}"> Logout </a>
-</div>
+	-->
 </body>
 </html>

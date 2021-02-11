@@ -31,5 +31,6 @@ class ConventieRepository:
         conventiefound.set_completedByFirmaTutori(conventie.get_completedByFirmaTutori())
         conventiefound.set_completedByCadruDidacticSupervizor(conventie.get_completedByCadruDidacticSupervizor())
         conventiefound.set_completedByDecan(conventie.get_completedByDecan())
+        conventiefound.set_blobContent(conventie.get_blobContent())
         db.session.commit()
         return conventie

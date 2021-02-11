@@ -10,9 +10,10 @@ class User(db.Model):
     password = db.Column("password", db.String)
     email = db.Column("email", db.String)
     role = db.Column('role', db.SmallInteger)
-
-    def __init__(self, id, username, password, email, role):
-        self.id = id
+    is_accepted = db.Column('is_accepted', db.Integer)
+    
+    def __init__(self, username, password, email, role):
+        #self.id = id
         self.username = username
         self.password = password
         self.email = email

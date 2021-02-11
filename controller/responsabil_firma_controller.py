@@ -38,7 +38,7 @@ def modify_conventie_input(conventie, firm, city, street, number, phone, fax, em
     from io import StringIO
     s = StringIO(content)
     for line in s:
-        # todo: rezolve signature
+
         line = line.replace("CompanyName Name", "CompanyName " + firm)
         line = line.replace("CompanyCity City", "CompanyCity " + city)
         line = line.replace("CompanyStreet Street", "CompanyStreet  " + street)
@@ -86,6 +86,8 @@ def modify_conventie_input(conventie, firm, city, street, number, phone, fax, em
             line = "ProjectName "+projectName + "\n"
         if "ProjectName" in line and projectName == "-":
             line = ""
+        if "ReprezentantSignature" in line:
+            line = "ReprezentantSignature " + signature +"\n"
         line = line.replace("ProjectName None", "ProjectName " +projectName)
         #art14 done
         line = line.replace("ConventionSignDate Date", "ConventionSignDate " + date)
@@ -149,29 +151,21 @@ def conventie():
 
     if request.method == "POST":
         info = companyInfoServ.getOne(session["id"])
-        firm = info.name #firm = request.form["firm"]
-        city = info.city#city = request.form["city"]
-        street = info.street#street = request.form["street"]
-        number = info.streetNo#number = request.form["number"]
-        phone = info.phone#phone = request.form["phone"]
-        fax=info.fax#fax = request.form["fax"]
-        email=info.email #email = request.form["email"]
-        code=info.fiscalCode#code = request.form["code"]
-        account = info.iban#account = request.form["account"]
-        banca = info.bank#banca = request.form["banca"]
-        representative = info.legalRepresentative#representative = request.form["representative"]
-        function = info.legalRepresentativeFunction#function = request.form["function"]
-        address=info.adresaStagiuPractica#address = request.form["address"]
-
-        startInternshipDate=str(internship.start_date) #startInternshipDate = request.form["startInternshipDate"]
-        endInternshipDate = str(internship.end_date)#endInternshipDate = request.form["endInternshipDate"]
-        #tutor = request.form["tutor"]
-        #tutorfunction = request.form["tutorfunction"]
-        #tutorphone = request.form["tutorphone"]
-        #tutorfax = request.form["tutorfax"]
-        #tutormail = request.form["tutormail"]
-
-
+        firm = info.name
+        city = info.city
+        street = info.street
+        number = info.streetNo
+        phone = info.phone
+        fax=info.fax
+        email=info.email
+        code=info.fiscalCode
+        account = info.iban
+        banca = info.bank
+        representative = info.legalRepresentative
+        function = info.legalRepresentativeFunction
+        address=info.adresaStagiuPractica
+        startInternshipDate=str(internship.start_date)
+        endInternshipDate = str(internship.end_date)
         awardsGranted = internship.awards
         rewardsGranted =internship.rewards
         otherConditions =internship.otherConditions
@@ -182,9 +176,7 @@ def conventie():
         woWorkContract =internship.noWorkContract
         EUFinanced = internship.EUFinanced
         projectBased = internship.projectBased
-
         projectName = internship.projectName
-
 
         date = str(date.today())
         signature = request.form["signature"]
@@ -201,7 +193,7 @@ def conventie():
             tutorphone = tutorInfo.phone
             tutorfax =tutorInfo.fax
             tutormail =tutorInfo.email
-            #print("AICI:",tutor,tutorfunction, tutorphone ,tutorfax ,tutormail)#OK
+
             modify_conventie_input(conventie, firm, city, street, number, phone, fax, email, code, account,
                                banca, representative,
                                function, address, hours, startInternshipDate, endInternshipDate, tutor,
@@ -360,7 +352,8 @@ def start_internship():
 
 def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, companyStreet, companyStreetNo,
                  companyPhone, fax, companyFiscalCode, companyBank, companyIBAN, companyLegalRepresentative,
-                 nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2):
+                 nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2,
+                 signature):
     import os
     dir_location = os.getcwd()
     while dir_location[-1] != "\\":
@@ -372,7 +365,6 @@ def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, 
 
     for line in file:
         line = line.strip()
-        # todo: rezolve signature
         line = line.replace("AccordYear 2020-2021", "AccordYear " + accordYear)
         line = line.replace("InternshipLenghtDays 50", "InternshipLenghtDays " + noHours)  # hours
         line = line.replace("AccordSignDate 10.10.2020", "AccordSignDate  " + accordSignDate)
@@ -394,6 +386,7 @@ def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, 
         line = line.replace("Specialization2 Matematica-Informatica", "Specialization2 " + specialization2)
         line = line.replace("Faculty2 Matematica-Informatica", "Faculty2 " + faculty2)
         line = line.replace("Faculty1 Matematica-Informatica", "Faculty1 " + faculty1)
+        line = line.replace("ReprezentantSignature x", "ReprezentantSignature " + signature)
 
         replaced_content = replaced_content + line + "\n"
     file.close()
@@ -406,8 +399,8 @@ def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, 
 
     acordServ.add(acord)
 
-    from controller.helpers.pdfTools import create_pdf_from_files_and_doc
-    create_pdf_from_files_and_doc("AcordPractica.pdf", "output.pdf", acord)
+    #from controller.helpers.pdfTools import create_pdf_from_files_and_doc
+    #create_pdf_from_files_and_doc("AcordPractica.pdf", "output.pdf", acord)
 
 
 @responsabil_firma.route('/acord_responsabil_firma', methods=["POST", "GET"])
@@ -445,17 +438,21 @@ def acord():
         faculty2 = request.form["Faculty2"]
         faculty1 = request.form["Faculty1"]
 
+        signature = request.form["signature"]
         create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, companyStreet, companyStreetNo,
                      companyPhone, fax, companyFiscalCode, companyBank, companyIBAN, companyLegalRepresentative,
-                     nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2)
+                     nrOfStudents, noStudents1, noStudents2, specialization1, specialization2, faculty1, faculty2,
+                     signature)
 
-        return render_template("firmaResponsabil/acordResponsabilFirma.html")
+        flash("Ati completat cu succes acordul!")
+        return render_template("firmaResponsabil/homeResponsabilFirma.html")
     else:
         try:
             company = serviceComp.getOne(idOfCurrentUser)
         except:
             flash("Trebuie sa introduceti mai intai datele firmei.")
             return redirect(url_for("responsabil_firma.home"))
+
         return render_template("firmaResponsabil/acordResponsabilFirma.html")
 
 
@@ -479,10 +476,14 @@ def date_firma():
         companyIBAN = request.form["CompanyIBAN"]
         companyLegalRepresentative = request.form["CompanyLegalRepresentative"]
 
+        companyLRFunction = request.form["CompanyLegalRepresentativeFunction"]
+        companyEmail = request.form ["CompanyEmail"]
+        adresaPractica = request.form["AdresaPractica"]
         from domain.company_info import CompanyInfo
         companyInfo = CompanyInfo(idOfCurrentUser, companyLegalRepresentative, companyName, companyCity, companyStreet,
                                   companyStreetNo, companyPhone, companyFax
-                                  , companyFiscalCode, companyBank, companyIBAN)
+                                  , companyFiscalCode, companyBank, companyIBAN,companyLRFunction,
+                                  companyEmail,adresaPractica)
         repoComp = CompanyInfoRepository()
         serviceComp = CompanyInfoService(repoComp)
         try:

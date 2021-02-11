@@ -5,7 +5,9 @@ from controller import db
 
 class SupervisorInfo(db.Model):
     __tablename__ = 'SupervisorInfos'
-    id = db.Column("id", db.Integer, db.ForeignKey('Users.id'), primary_key=True)
+    #Foreign key associated with column 'SupervisorInfos.id' could not find table 'Users'
+    #id = db.Column("id", db.Integer, db.ForeignKey('Users.id'), primary_key=True)
+    id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String)
     specialization = db.Column("specialization", db.String)
     email = db.Column("email", db.String)

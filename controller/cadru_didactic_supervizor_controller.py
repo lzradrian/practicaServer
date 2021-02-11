@@ -12,7 +12,7 @@ from service.student_info_service import StudentInfoService
 cadru_didactic_supervizor = Blueprint('cadru_didactic_supervizor', __name__)
 
 
-def modify_conventie_input(conventie, nume,functie,email,phone,fax):
+def modify_conventie_input(conventie, nume,functie,email,phone,fax,signature):
     '''
     Actualizeaza contentul conventiei din baza de date cu datele primite ca parametrii
     '''
@@ -27,8 +27,8 @@ def modify_conventie_input(conventie, nume,functie,email,phone,fax):
         line = line.replace("SupervisorEmail Email", "SupervisorEmail " + email)
         line = line.replace("SupervisorPhone Phone", "SupervisorPhone " + phone)
         line = line.replace("SupervisorFax Fax", "SupervisorFax " + fax)
-        # todo: alte date
-
+        if "SupervizorSignature" in line:
+            line = "SupervizorSignature " + signature + "\n"
         replaced_content = replaced_content + line
 
     conventie.set_content(replaced_content)
@@ -64,14 +64,14 @@ def conventie():
         email=info.email
         phone=info.phone
         fax=info.fax
-        signature = request.form["signature"] #todo
+        signature = request.form["signature"]
 
 
         repoStudInf = StudentInfoRepository()
         servStudInf = StudentInfoService(repoStudInf)
         numeStudenti = []
         for conventie in conventiiDeModificat:
-            modify_conventie_input(conventie,nume,functie,email,phone,fax)
+            modify_conventie_input(conventie,nume,functie,email,phone,fax,signature)
             numeStudenti.append(servStudInf.getOne(conventie.get_id()).name)
         mesaj = "Ati modificat cu succes conventiile urmatorilor studenti: "
         for nume in numeStudenti:
@@ -80,6 +80,9 @@ def conventie():
 
         return render_template("cadruDidacticSupervizor/homeCadruDidacticSupervizor.html")
     else:
+        if len(conventiiDeModificat)==0:
+            flash ("Nu sunt conventii de completat!")
+            return render_template("cadruDidacticSupervizor/homeCadruDidacticSupervizor.html")
         return render_template("cadruDidacticSupervizor/conventieCadruDidacticSupervizor.html")
 
 
@@ -93,9 +96,19 @@ def info():
 
         name = request.form["name"]
         specialization = request.form["specialization"]
+        email = request.form["email"]
+        fax=request.form["fax"]
+        phone =request.form["phone"]
 
-        service.add(SupervisorInfo(session["id"], name, specialization))
-    return render_template("cadruDidacticSupervizor/infoCadruDidacticSupervizor.html")
+        try:
+            service.add(SupervisorInfo(session["id"], name, specialization,email,phone,fax))
+        except:
+            service.update(SupervisorInfo(session["id"], name, specialization,email,phone,fax))
+
+        flash("Ati completat cu succes datele!")
+        return render_template("cadruDidacticSupervizor/homeCadruDidacticSupervizor.html")
+    else:#GET
+        return render_template("cadruDidacticSupervizor/infoCadruDidacticSupervizor.html")
 
 @cadru_didactic_supervizor.route('/cadru_didactic_supervizor', methods=["GET"])
 def home():
