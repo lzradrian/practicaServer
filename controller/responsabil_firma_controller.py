@@ -394,7 +394,7 @@ def create_acord(accordYear, noHours, accordSignDate, companyName, companyCity, 
     from domain.acordPractica import AcordPractica
     acordRepo = AcordRepository()
     acordServ = AcordService(acordRepo)
-    acord = AcordPractica(replaced_content)
+    acord = AcordPractica(replaced_content,session["id"])
     acord.set_completedByFirmaReprezentant(True)
 
     acordServ.add(acord)

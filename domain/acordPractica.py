@@ -7,12 +7,13 @@ class AcordPractica(db.Model):
     content = db.Column("content", db.String)
     completedByFirmaReprezentant = db.Column("completedByFirmaReprezentant", db.BOOLEAN)
     completedByDepJuridicUBB = db.Column("completedByDepJuridicUBB", db.BOOLEAN)
-
-    def __init__(self, content):
+    idFirmaReprezentant = db.Column("idFirmaReprezentant",db.Integer)
+    def __init__(self, content,idReprez):
 
         self.content = content
         self.completedByFirmaReprezentant = False
         self.completedByDepJuridicUBB = False
+        self.idFirmaReprezentant=idReprez
 
     def set_id(self, value):
         self._id = value
