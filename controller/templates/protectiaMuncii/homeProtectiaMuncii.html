@@ -12,6 +12,9 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
 </head>
 <body>
+	<div class="sticky-top">
+		<a href="{{url_for('auth.logout')}}" class="btn btn-sm btn-danger"> Logout </a>
+	</div>
 	<div class="row justify-content-center mt-4">
 		<div class="card infoDiv">
 			<div class="card-header">
@@ -19,11 +22,10 @@
 			</div>
 			<div class="justify-content-center  text-center card-body">
 				<form action="#" class="documentButtonForm" style="height: 30%">
-					<input class="documentButton" type="submit" name="vizualizareDeclaratii" value="Vizualizeaza declaratii">
+					<input class="btn btn-primary" type="submit" name="vizualizareDeclaratii" value="Vizualizeaza declaratii">
 				</form>
 			</div>
 		</div>
 	</div>
-	<a href="{{url_for('auth.logout')}}"> Logout </a>
 </body>
 </html>

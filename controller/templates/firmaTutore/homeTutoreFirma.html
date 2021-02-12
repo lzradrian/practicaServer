@@ -2,35 +2,65 @@
 <html>
 <head>
 	<title>Documente Practica</title>
-	<link rel="stylesheet" href="../styles.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	<!-- Google Fonts -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+	<!-- Bootstrap core CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Material Design Bootstrap -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+	<!-- JQuery -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+	<!-- MDB core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
 </head>
 <body>
-	<div class="documentDiv" style="height: 20%;top: 40%; left: 55%">
-		<h2>Completare date generale</h2>
-		<form action="{{ url_for('tutore_firma.info') }}" class="documentButtonForm" style="height: 30%">
-			<input class="documentButton" type="submit" name="tutoreFirmaConventieButton" value="Completeaza">
-		</form>
+	<div class="sticky-top">
+		<a href="{{url_for('auth.logout')}}" class="btn btn-sm btn-danger"> Logout </a>
 	</div>
-	<div class="documentDiv" style="height: 20%;top: 40%; left: 15%">
-		<h2>Acord de Practica</h2>
-		<form action="acordTutoreFirma.html" class="documentButtonForm" style="height: 30%">
-			<input class="documentButton" type="submit" name="tutoreFirmaAcordButton" value="Completeaza">
-		</form>
+	<div class="row justify-content-center mt-4 text-center">
+		<div class="col-md-3 card">
+			<div class="justify-content-center row card-header">
+				<h2>Completare date generale</h2>
+			</div>
+			<form action="{{ url_for('tutore_firma.info') }}" class="documentButtonForm" style="height: 30%">
+				<input class="btn btn-primary" type="submit" name="tutoreFirmaConventieButton" value="Completeaza">
+			</form>
+		</div>
 	</div>
-	<div class="documentDiv" style="height: 20%;top: 40%; left: 55%">
-		<h2>Conventie de Practica</h2>
-		<form action="{{ url_for('tutore_firma.conventie') }}" class="documentButtonForm" style="height: 30%">
-			<input class="documentButton" type="submit" name="tutoreFirmaConventieButton" value="Completeaza">
-		</form>
+	<div class="row justify-content-center mt-4 text-center">
+		<div class="col-md-3 card">
+			<div class="justify-content-center row card-header">
+				<h2>Acord de Practica</h2>
+			</div>
+			<form action="acordTutoreFirma.html" class="documentButtonForm" style="height: 30%">
+				<input class="btn btn-primary" type="submit" name="tutoreFirmaAcordButton" value="Completeaza">
+			</form>
+		</div>
 	</div>
-	<div class="documentDiv" style="height: 20%;top: 40%; left: 55%">
-		<h2>Evaluare Student</h2>
-		<form action="evaluareTutoreFirma.html" class="documentButtonForm" style="height: 30%">
-			<input class="documentButton" type="submit" name="tutoreFirmaEvaluareButton" value="Completeaza">
-		</form>
+	<div class="row justify-content-center mt-4 text-center">
+		<div class="col-md-3 card">
+			<div class="justify-content-center row card-header">
+				<h2>Conventie de Practica</h2>
+			</div>
+			<form action="{{ url_for('tutore_firma.conventie') }}" class="documentButtonForm" style="height: 30%">
+				<input class="btn btn-primary" type="submit" name="tutoreFirmaConventieButton" value="Completeaza">
+			</form>
+		</div>
 	</div>
-	<form action="{{url_for('auth.logout')}}" class="logoutButtonForm">
-		<input class="documentButton" type="submit" name="tutoreFirmaLogoutButton" value="Logout">
-	</form>
+	<div class="row justify-content-center mt-4 text-center">
+		<div class="col-md-3 card">
+			<div class="justify-content-center row card-header">
+				<h2>Evaluare Student</h2>
+			</div>
+			<form action="evaluareTutoreFirma.html" class="documentButtonForm" style="height: 30%">
+				<input class="btn btn-primary" type="submit" name="tutoreFirmaEvaluareButton" value="Completeaza">
+			</form>
+		</div>
+	</div>
 </body>
 </html>
