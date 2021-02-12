@@ -63,7 +63,8 @@ def create_pdf_from_files_and_doc(fisier_input_pdf, fisier_output_pdf, doc,subje
     remove_empty_lines(dir_location+"\\"+numeFisierTemporar)
     f = open(dir_location+"\\"+numeFisierTemporar, 'r')
     file_contents = f.read()
-    #print(file_contents)
+    print("Fisier conventie: ")
+    print(file_contents)
     f.close()
     os.chdir(dir_location)
 
