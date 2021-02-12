@@ -12,7 +12,7 @@ userService = UserService(userRepo)
 
 @auth.route("/")
 def home():
-    return redirect(url_for(get_home_route()))
+    return redirect(url_for("auth.login"))
 
 @auth.route("/admin", methods=["POST", "GET"])
 def admin():
